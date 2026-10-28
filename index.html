@@ -3,19 +3,39 @@
 <title>Pratap Marketing Hub</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/site.css">
 </head><body>
-<nav class="nav" aria-label="Site"><a class="brand" href="index.html">Pratap Marketing Hub</a><a href="brand-kit.html">Brand Kit</a><a href="comment-desk.html">Comment Desk</a></nav>
-<div class="wrap">
- <header class="top">
-  <h1>Pratap Marketing Hub</h1>
-  <p class="sub">One place for the LinkedIn work across every Pratap Group company.</p>
- </header>
- <div class="cards">
-  <a class="card" href="brand-kit.html"><h2>Brand Kit</h2><p>The colours, typefaces, art styles and rules Claude follows when it builds a post, for each company, plus what is still missing.</p></a>
-  <a class="card" href="comment-desk.html"><h2>Comment Desk</h2><p>Comments across the company pages, sorted by what needs a person. Locked, and showing sample data until LinkedIn approves API access.</p></a>
- </div>
- <p class="hint" style="margin-top:28px">More pages will be added here as they are built.</p>
-</div>
+<nav class="nav" aria-label="Site"><a class="brand" href="index.html" aria-label="Pratap Marketing Hub home"><img src="assets/pratap-logo.svg" alt="Pratap Group, Carving Lives"><span class="sr">Marketing Hub</span></a><a href="brand-kit.html">Brand Kit</a><a href="comment-desk.html">Comment Desk</a></nav>
+<main class="wrap">
+ <section class="hero">
+  <div>
+   <span class="kicker">Pratap Group · Marketing</span>
+   <h1>Pratap Marketing Hub</h1>
+   <p class="sub">One place for the LinkedIn work across every company in Pratap Group: the brand rules behind each post, and the conversations that need a person.</p>
+   <div class="actions"><a class="btn primary" href="brand-kit.html" style="text-decoration:none;padding:10px 22px">Open Brand Kit</a><a class="btn" href="comment-desk.html" style="text-decoration:none;padding:10px 22px">Open Comment Desk</a></div>
+  </div>
+  <div class="hero-art" aria-hidden="true"><i></i><i></i><i></i><i></i><img id="hero-img" src="assets/hero.jpg" alt="" onload="this.classList.add('ok')" onerror="this.remove()"></div>
+ </section>
+ <section class="grid2" aria-label="Pages">
+  <a class="tile" href="brand-kit.html">
+   <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="11" cy="12" r="7" fill="#1AB86B"/><circle cx="21" cy="12" r="7" fill="#0E9AC1" opacity=".85"/><circle cx="16" cy="21" r="7" fill="#14201C" opacity=".9"/></svg>
+   <h2>Brand Kit</h2>
+   <p>Colours, typefaces, art styles and rules for each company, and a clear view of what is still missing.</p>
+   <span class="go">Open →</span>
+  </a>
+  <a class="tile" href="comment-desk.html">
+   <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M5 7h22v14H14l-6 5v-5H5z" stroke="#14201C" stroke-width="2.2" stroke-linejoin="round"/><path d="M10 12h12M10 16h7" stroke="#0E9AC1" stroke-width="2.2" stroke-linecap="round"/></svg>
+   <h2>Comment Desk</h2>
+   <p>Comments across the company pages, sorted by what needs a person. Locked, and showing sample data until LinkedIn approves API access.</p>
+   <span class="go">Open →</span>
+  </a>
+  <div class="tile soon" aria-label="Coming later">
+   <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M6 24V14M13 24V8M20 24V17M27 24V11" stroke="#52615B" stroke-width="3" stroke-linecap="round"/></svg>
+   <h2>More to come</h2>
+   <p>Page analytics and other LinkedIn tools will be added here as they are built.</p>
+  </div>
+ </section>
+ <p class="foot">Internal marketing tools for Pratap Group. Some details are locked behind a password.</p>
+</main>
 </body></html>
