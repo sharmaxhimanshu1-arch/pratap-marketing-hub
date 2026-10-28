@@ -146,12 +146,6 @@ ul.plain{margin:6px 0 0;padding-left:18px;display:grid;gap:5px;font-size:14px}
 .nav a:hover{color:var(--fg)}
 .nav a[aria-current="page"]{color:var(--fg);border-bottom-color:var(--fg)}
 .nav .brand{color:var(--fg);font:700 16px var(--serif);margin-right:auto;border:0}
-.lockbar{max-width:960px;margin:0 auto 24px;padding:12px 14px;background:var(--soft);border-radius:6px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px}
-.lockbar strong{font-weight:600}
-.lockbar input#pw{font:14px var(--sans);flex:1 1 180px;min-width:0;border:1px solid var(--line);border-radius:4px;padding:8px 12px;background:var(--bg);color:var(--fg)}
-.lockbar .msg{flex-basis:100%;font:12px var(--mono);color:var(--crit)}
-.blur{filter:blur(6px);user-select:none;pointer-events:none;color:var(--muted)}
-.blurbox{margin:10px 0;padding:12px 0}
 .cards{border-top:1px solid var(--line);margin-top:28px}
 .card{display:block;padding:22px 0;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
 .card h2{margin:0 0 4px}
@@ -182,7 +176,6 @@ aside summary{font:700 18px var(--serif)}
 .nav .brand img{height:46px;width:auto;display:block}
 .nav a:not(.brand){font-weight:600}
 .nav a[aria-current="page"]{border-bottom-color:var(--green)}
-.lockbar{background:var(--soft);border:1px solid var(--line)}
 .hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:36px;align-items:center;padding-block:12px 36px}
 .hero h1{font-size:44px}
 .kicker{display:inline-block;font:600 12px var(--sans);letter-spacing:.09em;text-transform:uppercase;padding-bottom:6px;margin-bottom:14px;background:var(--grad) bottom/100% 3px no-repeat}
@@ -236,10 +229,5 @@ aside summary{font:700 18px var(--serif)}
 .nologo{font:500 11px var(--sans);color:var(--muted)}
 .klogo img{mix-blend-mode:multiply}
 
-.pwwrap{position:relative;flex:1 1 180px;min-width:0;display:flex}
-.pwwrap input#pw{flex:1;padding-right:44px}
-.eye{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:38px;height:34px;display:flex;align-items:center;justify-content:center;border:0;background:none;color:var(--muted);cursor:pointer;border-radius:6px}
-.eye:hover{color:var(--fg)}
-.eye:focus-visible{outline:2px solid var(--fg);outline-offset:1px}
 
 @media (max-width:520px){.nav{gap:2px 12px;flex-wrap:nowrap}.nav .brand img{height:32px}.nav a:not(.brand){font-size:12.5px;padding-inline:0;white-space:nowrap}}

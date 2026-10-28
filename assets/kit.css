@@ -25,8 +25,6 @@
 .rcards li{display:flex;gap:16px;align-items:flex-start;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--bg)}
 .rcards p{margin:0;font:500 15.5px/1.55 var(--sans)}
 .rnum{flex:none;width:30px;height:30px;border-radius:50%;background:var(--grad);color:#fff;font:700 13px/30px var(--sans);text-align:center}
-.lockhint{margin-top:16px;padding:14px 16px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:14px;background:var(--soft)}
-.lockhint.big{padding:34px 20px;text-align:center;font-size:15px}
 /* art styles */
 .sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:16px}
 .scard{border:1px solid var(--line);border-radius:16px;padding:20px;background:var(--bg);display:flex;flex-direction:column;gap:10px}

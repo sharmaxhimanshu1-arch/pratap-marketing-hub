@@ -2,7 +2,7 @@
   var ORDER = ["pratap-group", "telecrats", "beckhaul", "corsis", "ductel", "pratap-diesels", "pals", "voltters", "pratap-automobiles"];
   var STATUS = { ready: "p-ok", partial: "p-warn", none: "p-neu" };
   var GLYPH = { ok: "✓", part: "~", miss: "–" }, GLAB = { ok: "Have", part: "Partial", miss: "Missing" };
-  var pub = null, locked = null, view = "companies", cur = null, tab = "overview", lastFocus = null, toastT, editing = null, confirmDel = null, filt = "all";
+  var pub = null, more = null, view = "companies", cur = null, tab = "overview", lastFocus = null, toastT, editing = null, confirmDel = null, filt = "all";
   var KEY = "pmh-kit-edits", edits = { styles: {}, assign: {} };
   try { var _e = JSON.parse(localStorage.getItem(KEY) || "null"); if (_e && _e.styles && _e.assign) edits = _e; } catch (e) {}
   function saveEdits() { try { localStorage.setItem(KEY, JSON.stringify(edits)); } catch (e) {} }
@@ -18,7 +18,7 @@
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function validHex(h) { return /^#[0-9A-Fa-f]{6}$/.test(h || ""); }
   function $(id) { return document.getElementById(id); }
-  function co(id) { var c = Object.assign({}, pub.companies[id], locked && locked.companies[id]); c.artStyle = styleOf(id); return c; }
+  function co(id) { var c = Object.assign({}, pub.companies[id], more.companies[id]); c.artStyle = styleOf(id); return c; }
   function ids() {
     return Object.keys(pub.companies).sort(function (a, b) {
       var x = ORDER.indexOf(a), y = ORDER.indexOf(b); if (x < 0) x = 99; if (y < 0) y = 99; return x - y || a.localeCompare(b);
@@ -46,50 +46,48 @@
 
   /* ---------- views ---------- */
   function companiesView(list) {
-    var u = !!locked;
     var cards = list.map(function (id) {
       var c = co(id), st = c.artStyle && STY()[c.artStyle], sc = score(c), sw = swatches(c);
-      var meter = u ? '<div class="meter" title="' + sc.pts + ' of ' + sc.of + ' brand basics in place"><span style="width:' + Math.round(sc.pts / sc.of * 100) + '%"></span></div><small class="mtxt">' + (sc.pts % 1 ? sc.pts.toFixed(1) : sc.pts) + ' / ' + sc.of + ' basics</small>' : '';
+      var meter = '<div class="meter" title="' + sc.pts + ' of ' + sc.of + ' brand basics in place"><span style="width:' + Math.round(sc.pts / sc.of * 100) + '%"></span></div><small class="mtxt">' + (sc.pts % 1 ? sc.pts.toFixed(1) : sc.pts) + ' / ' + sc.of + ' basics</small>';
       return '<button type="button" class="kcard" data-open="' + esc(id) + '"><div class="klogo">' + logoHtml(c) + '</div>' +
         '<div class="kbody"><h3>' + esc(c.name) + '</h3><p>' + esc(c.about || "Description not added yet.") + '</p></div>' +
         '<div class="kfoot">' + (sw ? '<span class="dots" aria-hidden="true">' + sw + '</span>' : '') + (st ? '<span class="chip">' + esc(st.name) + '</span>' : '<span class="chip off">No art style</span>') +
-        '<span class="go" aria-hidden="true">Open →</span></div>' + (u ? '<div class="kprog">' + meter + '</div>' : '') + '</button>';
+        '<span class="go" aria-hidden="true">Open →</span></div>' + '<div class="kprog">' + meter + '</div>' + '</button>';
     }).join("");
     return '<p class="vhint">Pick a company to see its colours, fonts, art style and what is still missing.</p><div class="kgrid">' + cards + '</div>';
   }
 
   function rulesView() {
-    var rules = pub.rules.concat(locked ? locked.rules : []).sort(function (a, b) { return a.order - b.order; });
+    var rules = pub.rules.concat(more.rules).sort(function (a, b) { return a.order - b.order; });
     var out = '<p class="vhint">These apply to every post, for every company.</p><ol class="rcards">' + rules.map(function (r, i) {
       return '<li><span class="rnum">' + (i + 1) + '</span><div><p>' + esc(r.text) + '</p></div></li>';
     }).join("") + '</ol>';
-    if (!locked) out += '<div class="lockhint">🔒 More rules appear once you enter the password above.</div>';
     return out;
   }
 
   function lookBg(st) { var l = st.look || ["#EAF3EF", "#1AB86B"]; return "linear-gradient(135deg," + l[0] + "," + l[1] + ")"; }
   function lines(t) { return String(t || "").split("\n").map(function (x) { return x.trim(); }).filter(Boolean); }
   function stylesView(list) {
-    var all = STY(), u = !!locked, sids = Object.keys(all).sort(function (a, b) { return all[a].name.localeCompare(all[b].name); });
+    var all = STY(), sids = Object.keys(all).sort(function (a, b) { return all[a].name.localeCompare(all[b].name); });
     var users = {}; list.forEach(function (k) { var sid = styleOf(k); if (sid) (users[sid] = users[sid] || []).push(k); });
     var used = sids.filter(function (i) { return users[i]; }).length;
     var shown = sids.filter(function (i) { return filt === "all" || (filt === "used" ? users[i] : !users[i]); });
     var bar = '<div class="sbar"><div class="seg" role="group" aria-label="Filter styles">' +
       [["all", "All " + sids.length], ["used", "In use " + used], ["free", "Not in use " + (sids.length - used)]].map(function (f) { return '<button type="button" data-filt="' + f[0] + '" aria-pressed="' + (filt === f[0]) + '">' + f[1] + '</button>'; }).join("") + '</div>' +
-      (u ? '<button type="button" class="btn pri" data-new>＋ New style</button>' : '') + '</div>';
-    var note = u ? '<p class="vhint">Each company uses one style at a time. Switch a company on under a style and it leaves its old one.</p>' : '<div class="lockhint">🔒 Enter the password above to add, edit, delete or assign art styles.</div>';
+      '<button type="button" class="btn pri" data-new>＋ New style</button>' + '</div>';
+    var note = '<p class="vhint">Each company uses one style at a time. Switch a company on under a style and it leaves its old one.</p>';
     var cards = shown.map(function (i) {
       var st = all[i], us = users[i] || [];
       var tg = list.map(function (k) {
         var on = styleOf(k) === i, c = pub.companies[k], other = !on && styleOf(k) ? all[styleOf(k)].name : "";
-        return '<button type="button" class="tgl" role="switch" aria-checked="' + on + '"' + (u ? ' data-toggle="' + esc(i) + '|' + esc(k) + '"' : ' disabled') + ' title="' + esc(on ? "Remove from " + c.name : other ? "Switch " + c.name + " from " + other : "Use for " + c.name) + '"><span class="knob"></span><span class="tl">' + esc(c.name.replace(/\s+(Technologies|India)$/i, "")) + '</span></button>';
+        return '<button type="button" class="tgl" role="switch" aria-checked="' + on + '"' + ' data-toggle="' + esc(i) + '|' + esc(k) + '"' + ' title="' + esc(on ? "Remove from " + c.name : other ? "Switch " + c.name + " from " + other : "Use for " + c.name) + '"><span class="knob"></span><span class="tl">' + esc(c.name.replace(/\s+(Technologies|India)$/i, "")) + '</span></button>';
       }).join("");
       var det = '<details class="sdet"><summary>Do, avoid and prompt</summary>' +
         (st.bestFor ? '<p><b>Best for:</b> ' + esc(st.bestFor) + '</p>' : '') +
         (st.dos && st.dos.length ? '<div class="two"><div><h5>Do</h5><ul>' + st.dos.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></div>' + (st.avoid && st.avoid.length ? '<div><h5>Avoid</h5><ul class="av">' + st.avoid.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></div>' : '') + '</div>' : '') +
         (st.prompt ? '<h5>Prompt template</h5><div class="pbox"><code>' + esc(st.prompt) + '</code><button type="button" class="btn sm" data-copy="' + esc(st.prompt) + '">Copy</button></div>' : '') + '</details>';
-      var acts = u ? (confirmDel === i ? '<div class="del"><span>' + (us.length ? 'Used by ' + (us.length === 1 ? '1 company' : us.length + ' companies') + '. ' : '') + 'Delete this style?</span><button type="button" class="btn danger sm" data-del-yes="' + esc(i) + '">Yes, delete</button><button type="button" class="btn sm" data-del-no>Keep</button></div>'
-        : '<div class="acts"><button type="button" class="btn sm" data-edit="' + esc(i) + '">Edit</button><button type="button" class="btn sm" data-dup="' + esc(i) + '">Duplicate</button><button type="button" class="btn sm ghost" data-del="' + esc(i) + '">Delete</button></div>') : '';
+      var acts = (confirmDel === i ? '<div class="del"><span>' + (us.length ? 'Used by ' + (us.length === 1 ? '1 company' : us.length + ' companies') + '. ' : '') + 'Delete this style?</span><button type="button" class="btn danger sm" data-del-yes="' + esc(i) + '">Yes, delete</button><button type="button" class="btn sm" data-del-no>Keep</button></div>'
+        : '<div class="acts"><button type="button" class="btn sm" data-edit="' + esc(i) + '">Edit</button><button type="button" class="btn sm" data-dup="' + esc(i) + '">Duplicate</button><button type="button" class="btn sm ghost" data-del="' + esc(i) + '">Delete</button></div>');
       return '<article class="scard' + (us.length ? ' inuse' : '') + '"><div class="slook" style="background:' + esc(lookBg(st)) + '"><span class="sbadge">' + (us.length ? 'In use · ' + us.length : 'Not in use') + '</span></div><div class="sbody"><h3>' + esc(st.name) + '</h3><p>' + esc(st.description) + '</p>' + det +
         '<div class="sub2">Use for</div><div class="tgls">' + tg + '</div>' + acts + '</div></article>';
     }).join("");
@@ -122,7 +120,6 @@
   }
 
   function gapsView(list) {
-    if (!locked) return '<div class="lockhint big">🔒 The gap table is private. Enter the password above to see what is missing for each company.</div>';
     var heads = checks({}).map(function (x) { return x[0]; }), total = 0;
     var rows = list.map(function (id) {
       var c = co(id), ch = checks(c), g = ch.filter(function (x) { return x[1] !== "ok"; }).length; total += g;
@@ -137,11 +134,10 @@
 
   function render() {
     var list = ids(), n = { ready: 0, partial: 0, none: 0 }, open = 0;
-    if (locked) list.forEach(function (i) { var c = co(i); n[c.status in n ? c.status : "none"]++; open += (c.open || []).length; });
+    list.forEach(function (i) { var c = co(i); n[c.status in n ? c.status : "none"]++; open += (c.open || []).length; });
     function s(b, l, hot) { return '<div class="stat' + (hot ? ' hot' : '') + '"><b>' + b + '</b><span>' + l + '</span></div>'; }
-    $("stats").innerHTML = locked ? s(n.ready, "kits ready") + s(n.partial, "partial") + s(n.none, "no kit yet", n.none > 0) + s(pub.rules.length + locked.rules.length, "group rules") + s(open, "open items")
-      : s(list.length, "kits") + s(Object.keys(STY()).length, "art styles");
-    var tabs = [["companies", "Companies", list.length], ["rules", "Group rules", pub.rules.length + (locked ? locked.rules.length : 0)], ["styles", "Art styles", Object.keys(STY()).length], ["gaps", "Gaps", locked ? null : "🔒"]];
+    $("stats").innerHTML = s(n.ready, "kits ready") + s(n.partial, "partial") + s(n.none, "no kit yet", n.none > 0) + s(pub.rules.length + more.rules.length, "group rules") + s(open, "open items");
+    var tabs = [["companies", "Companies", list.length], ["rules", "Group rules", pub.rules.length + more.rules.length], ["styles", "Art styles", Object.keys(STY()).length], ["gaps", "Gaps", null]];
     var nav = '<div class="vtabs" role="tablist" aria-label="Brand kit sections">' + tabs.map(function (t) {
       return '<button type="button" role="tab" class="vtab" data-view="' + t[0] + '" aria-selected="' + (view === t[0]) + '">' + t[1] + (t[2] != null ? '<small>' + t[2] + '</small>' : '') + '</button>';
     }).join("") + '</div>';
@@ -151,12 +147,11 @@
   }
 
   /* ---------- drawer ---------- */
-  function lockedLine(label) { return '<div class="blurbox"><div class="sec-sub">' + esc(label) + '</div><p class="blur" aria-hidden="true">Locked until the password is entered. Locked until the password is entered.</p></div>'; }
   function listHtml(items, empty) { return items && items.length ? '<ul class="todo">' + items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>' : '<p class="hint">' + empty + '</p>'; }
   function field(label, v) { return '<div class="fld"><dt>' + label + '</dt><dd>' + (v ? esc(v) : '<span class="unset">Not set yet</span>') + '</dd></div>'; }
 
   function panel(id, t) {
-    var c = co(id), u = !!locked, st = c.artStyle && STY()[c.artStyle], out = "";
+    var c = co(id), st = c.artStyle && STY()[c.artStyle], out = "";
     if (t === "overview") {
       var cs = c.colors || [];
       out += '<h4>Colours</h4>' + (cs.length ? '<div class="swgrid">' + cs.map(function (k) {
@@ -167,14 +162,12 @@
     } else if (t === "visual") {
       var all = STY(), sids = Object.keys(all).sort(function (a, b) { return all[a].name.localeCompare(all[b].name); });
       out += '<h4>Art style in use</h4>' + (st ? '<div class="artbox"><div class="alook" style="background:' + esc(lookBg(st)) + '"></div><div><b>' + esc(st.name) + '</b><p>' + esc(st.description) + '</p></div></div>' : '<p class="hint">No art style chosen yet.</p>');
-      out += u ? '<label class="pick">Change style<select data-assign="' + esc(id) + '"><option value="">No art style</option>' + sids.map(function (k) { return '<option value="' + esc(k) + '"' + (c.artStyle === k ? ' selected' : '') + '>' + esc(all[k].name) + '</option>'; }).join("") + '</select></label><p class="hint">One style per company. Choosing a new one replaces the old.</p>' : '<p class="hint">🔒 Enter the password to change the style.</p>';
+      out += '<label class="pick">Change style<select data-assign="' + esc(id) + '"><option value="">No art style</option>' + sids.map(function (k) { return '<option value="' + esc(k) + '"' + (c.artStyle === k ? ' selected' : '') + '>' + esc(all[k].name) + '</option>'; }).join("") + '</select></label><p class="hint">One style per company. Choosing a new one replaces the old.</p>';
       out += '<h4>Look and feel</h4><dl class="flds">' + field("Imagery", c.imagery) + field("Layout", c.layout) + '</dl>';
     } else if (t === "voice") {
-      if (!u) return lockedLine("Voice and claims") + lockedLine("Rules for this company");
       out += '<h4>Voice and claims</h4>' + (c.voice ? '<p class="prose">' + esc(c.voice) + '</p>' : '<p class="hint">Not set yet.</p>');
       out += '<h4>Rules for this company</h4>' + listHtml(c.rules, "No company-specific rules recorded.");
     } else {
-      if (!u) return lockedLine("What is still missing");
       var miss = checks(c).filter(function (x) { return x[1] !== "ok"; });
       out += '<h4>Still missing</h4>' + (miss.length ? '<ul class="todo">' + miss.map(function (x) { return '<li>' + esc(x[0]) + (x[1] === "part" ? ' <em>provisional</em>' : '') + '</li>'; }).join("") + '</ul>' : '<p class="hint">Nothing missing.</p>');
       out += '<h4>Open items</h4>' + listHtml(c.open, "No open items.") + (c.source ? '<p class="src">Source: ' + esc(c.source) + '</p>' : '');
@@ -183,14 +176,14 @@
   }
 
   function renderDrawer() {
-    var id = cur, c = co(id), u = !!locked, list = ids(), i = list.indexOf(id), sc = score(c);
-    var nopen = u ? checks(c).filter(function (x) { return x[1] !== "ok"; }).length : null;
+    var id = cur, c = co(id), list = ids(), i = list.indexOf(id), sc = score(c);
+    var nopen = checks(c).filter(function (x) { return x[1] !== "ok"; }).length;
     var tabs = [["overview", "Brand"], ["visual", "Visual"], ["voice", "Voice & rules"], ["todo", "To do" + (nopen != null ? " (" + nopen + ")" : "")]];
-    var pill = u ? '<span class="pill ' + (STATUS[c.status] || "p-neu") + '">' + esc(c.statusNote || "") + '</span>' : '';
+    var pill = '<span class="pill ' + (STATUS[c.status] || "p-neu") + '">' + esc(c.statusNote || "") + '</span>';
     $("drawer").innerHTML =
       '<div class="dhead"><div class="dnav"><button type="button" class="ibtn" data-step="-1" aria-label="Previous company">←</button><span class="dcount">' + (i + 1) + ' of ' + list.length + '</span><button type="button" class="ibtn" data-step="1" aria-label="Next company">→</button></div><button type="button" class="ibtn close" data-close aria-label="Close">✕</button></div>' +
       '<div class="dhero"><div class="dlogo">' + logoHtml(c) + '</div><div><h2 id="dtitle">' + esc(c.name) + '</h2>' + pill + '</div></div>' +
-      '<p class="dabout">' + esc(c.about || "Description not added yet.") + '</p>' + (u && c.summary ? '<p class="dsum">' + esc(c.summary) + '</p>' : '') +
+      '<p class="dabout">' + esc(c.about || "Description not added yet.") + '</p>' + (c.summary ? '<p class="dsum">' + esc(c.summary) + '</p>' : '') +
       '<div class="dtabs" role="tablist">' + tabs.map(function (t) { return '<button type="button" role="tab" class="dtab" data-tab="' + t[0] + '" aria-selected="' + (tab === t[0]) + '">' + t[1] + '</button>'; }).join("") + '</div>' +
       '<div class="dbody" role="tabpanel">' + panel(id, tab) + '</div>';
   }
@@ -282,14 +275,9 @@
     saveEdits(); var wasNew = editing.isNew; closeEditor(); render(); toast(wasNew ? "Style added" : "Style updated");
   });
 
-  fetch("data/brandkit.public.json").then(function (r) { return r.json(); }).then(function (d) {
-    pub = d; render();
+  Promise.all([fetch("data/brandkit.public.json"), fetch("data/brandkit.details.json")]).then(function (r) { return Promise.all(r.map(function (x) { return x.json(); })); }).then(function (d) {
+    pub = d[0]; more = d[1]; render();
     var h = (location.hash || "").replace("#", "");
     if (h === "art" || h === "styles") { view = "styles"; render(); } else if (h === "rules") { view = "rules"; render(); } else if (h && pub.companies[h]) openCo(h);
-    Lock.init({
-      blobUrl: "data/brandkit.locked.json",
-      onUnlock: function (text) { locked = JSON.parse(text); render(); },
-      onLock: function () { locked = null; confirmDel = null; closeEditor(); if (view === "gaps") view = "companies"; render(); }
-    });
   }).catch(function () { $("root").innerHTML = '<div class="empty">Could not load the brand kit data.</div>'; });
 })();
