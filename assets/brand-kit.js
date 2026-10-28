@@ -82,6 +82,22 @@
     return '<div class="scroll"><table><thead><tr><th>Company</th>' + heads.map(function (t) { return '<th>' + esc(t) + '</th>'; }).join("") + '<th>Open items</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
   }
 
+
+  function monogram(c) {
+    var w = String(c.name || "?").replace(/^Pratap\s+/i, "").trim().split(/\s+/)[0];
+    return '<span class="mono-logo" aria-hidden="true">' + esc(w.charAt(0).toUpperCase()) + '</span>';
+  }
+  function cardsHtml(list) {
+    return '<div class="kgrid">' + list.map(function (id) {
+      var c = pub.companies[id], st = c.artStyle && pub.artstyles[c.artStyle];
+      var logo = c.logoFile ? '<img src="' + esc(c.logoFile) + '?v=1" alt="' + esc(c.name) + ' logo" loading="lazy">' : monogram(c);
+      var note = c.logoFile ? '' : '<small class="nologo">Logo file not added yet</small>';
+      return '<button type="button" class="kcard" data-goto="' + esc(id) + '"><div class="klogo">' + logo + '</div>' +
+        '<h3>' + esc(c.name) + '</h3><p>' + esc(c.about || "Description not added yet.") + '</p>' +
+        '<div class="kmeta">' + (st ? '<span class="chip">' + esc(st.name) + '</span>' : '<span class="chip off">No art style</span>') + note + '</div></button>';
+    }).join("") + '</div>';
+  }
+
   function render() {
     var list = ids(), n = { ready: 0, partial: 0, none: 0 }, open = 0;
     if (locked) list.forEach(function (i) { var c = co(i); n[c.status in n ? c.status : "none"]++; open += (c.open || []).length; });
@@ -90,7 +106,7 @@
       : s(list.length, "kits") + s(Object.keys(pub.artstyles).length, "art styles");
 
     var gb = gapsBody();
-    var html = sec("gaps", "What we have and what's missing", locked ? gapsBody.count : "", gb, locked ? '<p class="hint">✓ we have it · ~ partly or provisional · – missing. Click a company to open its kit.</p>' : "");
+    var html = cardsHtml(list) + sec("gaps", "What we have and what's missing", locked ? gapsBody.count : "", gb, locked ? '<p class="hint">✓ we have it · ~ partly or provisional · – missing. Click a company to open its kit.</p>' : "");
 
     var rules = pub.rules.concat(locked ? locked.rules : []).sort(function (a, b) { return a.order - b.order; });
     var rb = '<ul class="glist">' + rules.map(function (r) { return '<li><span>' + esc(r.text) + '</span><small>' + esc(r.tag) + '</small></li>'; }).join("") + (locked ? '' : '<li><span class="blur" aria-hidden="true">More rules are locked until the password is entered.</span></li>') + '</ul>';

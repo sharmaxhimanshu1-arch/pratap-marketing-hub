@@ -219,3 +219,19 @@ aside summary{font:700 18px var(--serif)}
 .gloss dt{font-weight:700;margin-top:14px}
 .gloss dd{margin:2px 0 0;color:var(--muted);max-width:64ch}
 [hidden]{display:none!important}
+
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;margin:26px 0 30px}
+.kcard{display:flex;flex-direction:column;gap:8px;text-align:left;padding:0 0 18px;border:1px solid var(--line);border-radius:16px;background:var(--bg);color:var(--fg);font:inherit;cursor:pointer;overflow:hidden;position:relative;min-width:0}
+.kcard::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:var(--grad);z-index:1}
+.kcard:hover{border-color:var(--fg)}
+.kcard:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+.klogo{height:120px;display:flex;align-items:center;justify-content:center;background:var(--soft);padding:22px 24px;margin-bottom:4px}
+.klogo img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.mono-logo{width:62px;height:62px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font:800 28px var(--serif);color:#fff}
+.kcard h3{margin:0;padding:0 18px;font:700 17px/1.3 var(--serif)}
+.kcard p{margin:0;padding:0 18px;color:var(--muted);font:500 13.5px/1.55 var(--sans);flex:1}
+.kmeta{padding:6px 18px 0;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.chip{font:600 11px var(--sans);padding:3px 10px;border-radius:999px;background:var(--soft);border:1px solid var(--line)}
+.chip.off{color:var(--muted);border-style:dashed;background:transparent}
+.nologo{font:500 11px var(--sans);color:var(--muted)}
+.klogo img{mix-blend-mode:multiply}

@@ -23,7 +23,7 @@ async function encrypt(text) {
 
 // Brand kit: open fields go to public JSON, the rest is encrypted.
 const src = JSON.parse(readFileSync(`${dir}/brandkit.source.json`, "utf8"));
-const OPEN = ["name", "logo", "tagline", "typography", "imagery", "layout", "colors", "artStyle"];
+const OPEN = ["about", "logoFile", "name", "logo", "tagline", "typography", "imagery", "layout", "colors", "artStyle"];
 const pub = { companies: {}, rules: [], artstyles: src.artstyles };
 const locked = { companies: {}, rules: [] };
 for (const [id, c] of Object.entries(src.companies)) {
