@@ -148,7 +148,7 @@ ul.plain{margin:6px 0 0;padding-left:18px;display:grid;gap:5px;font-size:14px}
 .nav .brand{color:var(--fg);font:700 16px var(--serif);margin-right:auto;border:0}
 .lockbar{max-width:960px;margin:0 auto 24px;padding:12px 14px;background:var(--soft);border-radius:6px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px}
 .lockbar strong{font-weight:600}
-.lockbar input[type=password]{font:14px var(--sans);flex:1 1 180px;min-width:0;border:1px solid var(--line);border-radius:4px;padding:8px 12px;background:var(--bg);color:var(--fg)}
+.lockbar input#pw{font:14px var(--sans);flex:1 1 180px;min-width:0;border:1px solid var(--line);border-radius:4px;padding:8px 12px;background:var(--bg);color:var(--fg)}
 .lockbar .msg{flex-basis:100%;font:12px var(--mono);color:var(--crit)}
 .blur{filter:blur(6px);user-select:none;pointer-events:none;color:var(--muted)}
 .blurbox{margin:10px 0;padding:12px 0}
@@ -235,3 +235,9 @@ aside summary{font:700 18px var(--serif)}
 .chip.off{color:var(--muted);border-style:dashed;background:transparent}
 .nologo{font:500 11px var(--sans);color:var(--muted)}
 .klogo img{mix-blend-mode:multiply}
+
+.pwwrap{position:relative;flex:1 1 180px;min-width:0;display:flex}
+.pwwrap input#pw{flex:1;padding-right:44px}
+.eye{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:38px;height:34px;display:flex;align-items:center;justify-content:center;border:0;background:none;color:var(--muted);cursor:pointer;border-radius:6px}
+.eye:hover{color:var(--fg)}
+.eye:focus-visible{outline:2px solid var(--fg);outline-offset:1px}
