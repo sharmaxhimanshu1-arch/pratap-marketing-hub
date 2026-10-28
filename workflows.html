@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workflows · Pratap Marketing Hub</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/site.css?v=9">
+<link rel="stylesheet" href="assets/workflows.css?v=1">
+</head><body class="wf-page">
+<nav class="nav" aria-label="Site"><a class="brand" href="index.html" aria-label="Pratap Marketing Hub home"><img src="assets/pratap-logo.svg?v=4" alt="Pratap Group, Carving Lives"><span class="sr">Marketing Hub</span></a><a href="brand-kit.html">Brand Kit</a><a href="comment-desk.html">Comment Desk</a><a href="analytics.html">Analytics</a><a href="workflows.html" aria-current="page">Workflows</a></nav>
+<div class="wrap wf-wrap">
+ <header class="top">
+  <h1>Workflows</h1>
+  <p class="sub">Run Claude's skills visually. Pick a workflow and a company, follow the steps, and copy each command into Claude.</p>
+  <span class="badge">Claude does the work in chat · progress saves in this browser</span>
+ </header>
+
+ <div class="wf-bar" id="wfbar">
+  <div class="vtabs" role="tablist" aria-label="Workflows" id="wftabs"></div>
+  <div class="wf-co" id="wfco" role="group" aria-label="Company"></div>
+ </div>
+
+ <main id="wfmain" aria-live="polite"></main>
+
+ <footer class="wf-foot">
+  <span id="wfstate" class="muted"></span>
+  <span class="wf-foot-a"><button class="linkbtn" id="wfexport" type="button">Export progress</button><button class="linkbtn" id="wfreset" type="button">Reset all progress</button></span>
+ </footer>
+ <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</div>
+<script src="assets/workflow-defs.js?v=1"></script>
+<script src="assets/workflows.js?v=1"></script>
+</body></html>

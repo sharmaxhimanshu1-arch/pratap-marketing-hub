@@ -131,3 +131,13 @@ body.home{background:#FBFDFC}
 @media (max-width:560px){.cgrid{grid-template-columns:minmax(0,1fr)}.new .nt{min-height:36px}.cgo{opacity:1;transform:none}}
 .cc .cl{height:112px;overflow:hidden;min-height:0}.cc .cl img{max-height:72px;width:auto;max-width:100%}
 .kbd{white-space:nowrap}
+/* Workflows tool card: full-width feature row */
+.rv.d3{transition-delay:.24s}
+.tool.wide{grid-column:1/-1;flex-direction:row}
+.tool.wide .prev{width:38%;height:auto;min-height:170px;flex:none}
+.wfp{display:flex;align-items:center;justify-content:center;gap:0}
+.wfp i{width:20px;height:20px;border-radius:50%;border:3px solid #C9D6D1;background:#fff;flex:none}
+.wfp i.d{background:var(--green);border-color:var(--green)}
+.wfp i.n{border-color:var(--fg);box-shadow:0 0 0 5px rgba(26,184,107,.25)}
+.wfp u{height:3px;width:34px;background:#C9D6D1;flex:none}
+@media (max-width:900px){.tool.wide{flex-direction:column}.tool.wide .prev{width:auto;height:190px;min-height:0}}

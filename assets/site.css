@@ -230,4 +230,4 @@ aside summary{font:700 18px var(--serif)}
 .klogo img{mix-blend-mode:multiply}
 
 
-@media (max-width:520px){.nav{gap:2px 12px;flex-wrap:nowrap}.nav .brand img{height:32px}.nav a:not(.brand){font-size:12.5px;padding-inline:0;white-space:nowrap}}
+@media (max-width:520px){.nav{gap:2px 14px;flex-wrap:wrap}.nav .brand img{height:32px}.nav a:not(.brand){font-size:12.5px;padding-inline:0;white-space:nowrap}}
