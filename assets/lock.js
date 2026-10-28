@@ -47,7 +47,7 @@
     }
     if (!(window.crypto && crypto.subtle)) { bar.textContent = "Locked details need a secure (https) page."; return; }
     showLocked();
-    fetch(opts.blobUrl).then(function (r) { return r.json(); }).then(function (b) { blob = b; var s = stored(); if (s) tryPw(s, true); })
+    fetch(opts.blobUrl + "?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (b) { blob = b; var s = stored(); if (s) tryPw(s, true); })
       .catch(function () { showLocked("Could not load locked data."); });
   }
   window.Lock = { init: init, decrypt: decrypt };
