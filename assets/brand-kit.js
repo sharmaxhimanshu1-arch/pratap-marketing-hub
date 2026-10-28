@@ -1,21 +1,18 @@
 (function () {
   var ORDER = ["pratap-group", "telecrats", "beckhaul", "corsis", "ductel", "pratap-diesels", "pals", "voltters", "pratap-automobiles"];
   var STATUS = { ready: "p-ok", partial: "p-warn", none: "p-neu" };
-  var FIELDS = [["logo", "Logo and signature"], ["tagline", "Tagline"], ["typography", "Typography"], ["imagery", "Imagery"], ["layout", "Layout"], ["voice", "Voice and claims"]];
   var GLYPH = { ok: "✓", part: "~", miss: "–" }, GLAB = { ok: "Have", part: "Partial", miss: "Missing" };
-  var pub = null, locked = null, openIds = {};
+  var pub = null, locked = null, view = "companies", cur = null, tab = "overview", lastFocus = null, toastT;
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function validHex(h) { return /^#[0-9A-Fa-f]{6}$/.test(h || ""); }
   function $(id) { return document.getElementById(id); }
-
   function co(id) { return Object.assign({}, pub.companies[id], locked && locked.companies[id]); }
   function ids() {
     return Object.keys(pub.companies).sort(function (a, b) {
       var x = ORDER.indexOf(a), y = ORDER.indexOf(b); if (x < 0) x = 99; if (y < 0) y = 99; return x - y || a.localeCompare(b);
     });
   }
-
   function checks(c) {
     var cs = c.colors || [], valid = cs.filter(function (x) { return validHex(x.hex); }).length;
     var col = !cs.length ? "miss" : (valid === cs.length ? "ok" : (valid ? "part" : "miss"));
@@ -27,75 +24,59 @@
     var art = c.artStyle && pub.artstyles[c.artStyle] ? "ok" : "miss";
     return [["Logo files", logo], ["Colours", col], ["Typeface", typ], ["Tagline", has(c.tagline)], ["Imagery", has(c.imagery)], ["Layout", has(c.layout)], ["Voice", has(c.voice)], ["Guideline doc", doc], ["Art style", art]];
   }
-
-  var FILLER = "Locked until the password is entered. Locked until the password is entered. Locked until the password is entered.";
-  function lockedBlock(label) {
-    return '<div class="blurbox"><div class="sec-sub">' + esc(label) + '</div><p class="blur" aria-hidden="true">' + FILLER + '</p></div>';
-  }
-  function list(items) { return items && items.length ? '<ul class="plain">' + items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>' : '<p class="hint">None recorded.</p>'; }
-
-  function colorsView(c) {
-    var cs = c.colors || [];
-    if (!cs.length) return '<p class="hint">No colours recorded.</p>';
-    return '<ul class="clist">' + cs.map(function (k) {
-      var sw = validHex(k.hex) ? '<span class="sw" style="background:' + esc(k.hex) + '"></span>' : '<span class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 3px,#eee 3px,#eee 6px)"></span>';
-      return '<li><span>' + sw + '<b style="font-weight:600">' + esc(k.name) + '</b></span><span class="mono">' + (validHex(k.hex) ? esc(k.hex.toUpperCase()) : 'hex not set') + '</span>' + (k.role ? '<span class="role">' + esc(k.role) + '</span>' : '') + '</li>';
-    }).join("") + '</ul>';
-  }
-
-  function artView(c) {
-    var s = c.artStyle && pub.artstyles[c.artStyle];
-    return s ? '<p class="hint"><b>' + esc(s.name) + '.</b> ' + esc(s.description) + '</p>' : '<p class="hint">No art style chosen yet.</p>';
-  }
-
-  function companyBody(id) {
-    var c = co(id), u = !!locked, out = "";
-    if (u) {
-      var miss = checks(c).filter(function (x) { return x[1] !== "ok"; });
-      out += '<div class="sec-sub">Still missing</div>' + (miss.length ? '<ul class="plain">' + miss.map(function (x) { return '<li>' + esc(x[0]) + (x[1] === "part" ? ' (provisional)' : '') + '</li>'; }).join("") + '</ul>' : '<p class="hint">Nothing missing.</p>');
-    } else out += lockedBlock("Still missing");
-    out += '<div class="sec-sub">Art style in use</div>' + artView(c) + '<div class="sec-sub">Colours</div>' + colorsView(c);
-    out += '<div class="sec-sub">Details</div><dl class="guide">' + FIELDS.map(function (f) {
-      if (f[0] === "voice" && !u) return '<dt>' + f[1] + '</dt><dd><span class="blur" aria-hidden="true">Locked until unlocked</span></dd>';
-      return '<dt>' + f[1] + '</dt><dd>' + (c[f[0]] ? esc(c[f[0]]) : '<span style="color:var(--muted)">Not set</span>') + '</dd>';
-    }).join("") + '</dl>';
-    if (u) {
-      out += '<div class="sec-sub">Rules for this company</div>' + list(c.rules) + '<div class="sec-sub">Open items</div>' + list(c.open) + (c.source ? '<p class="src">Source: ' + esc(c.source) + '</p>' : '');
-    } else out += lockedBlock("Rules and open items");
-    return out;
-  }
-
-  function sec(id, title, count, body, lead) {
-    return '<details class="block sec" data-id="' + esc(id) + '"' + (openIds[id] ? ' open' : '') + '><summary><div class="block-h" style="width:100%"><h2>' + title + '</h2>' + (count ? '<span class="count">' + count + '</span>' : '') + '<span class="tog"></span></div></summary>' + (lead || "") + body + '</details>';
-  }
-
-  function gapsBody() {
-    if (!locked) return lockedBlock("Gap table");
-    var heads = checks({}).map(function (x) { return x[0]; }), gaps = 0, withGaps = 0, list = ids();
-    var rows = list.map(function (id) {
-      var c = co(id), ch = checks(c), g = ch.filter(function (x) { return x[1] !== "ok"; }).length; gaps += g; if (g) withGaps++;
-      return '<tr><td><button class="linkbtn" data-goto="' + esc(id) + '">' + esc(c.name) + '</button></td>' + ch.map(function (x) {
-        return '<td aria-label="' + esc(x[0] + ': ' + GLAB[x[1]]) + '" style="color:' + (x[1] === "miss" ? 'var(--crit)' : x[1] === "part" ? 'var(--warn)' : 'var(--ok)') + ';font-weight:600">' + GLYPH[x[1]] + '</td>';
-      }).join("") + '<td class="mono">' + ((c.open || []).length) + '</td></tr>';
-    }).join("");
-    gapsBody.count = gaps + (gaps === 1 ? " gap" : " gaps") + " across " + withGaps + " of " + list.length;
-    return '<div class="scroll"><table><thead><tr><th>Company</th>' + heads.map(function (t) { return '<th>' + esc(t) + '</th>'; }).join("") + '<th>Open items</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
-  }
-
+  function score(c) { var ch = checks(c), pts = 0; ch.forEach(function (x) { pts += x[1] === "ok" ? 1 : x[1] === "part" ? .5 : 0; }); return { pts: pts, of: ch.length }; }
 
   function monogram(c) {
     var w = String(c.name || "?").replace(/^Pratap\s+/i, "").trim().split(/\s+/)[0];
     return '<span class="mono-logo" aria-hidden="true">' + esc(w.charAt(0).toUpperCase()) + '</span>';
   }
-  function cardsHtml(list) {
-    return '<div class="kgrid">' + list.map(function (id) {
-      var c = pub.companies[id], st = c.artStyle && pub.artstyles[c.artStyle];
-      var logo = c.logoFile ? '<img src="' + esc(c.logoFile) + '?v=8" alt="' + esc(c.name) + ' logo" loading="lazy">' : monogram(c);
-      var note = c.logoFile ? '' : '<small class="nologo">Logo file not added yet</small>';
-      return '<button type="button" class="kcard" data-goto="' + esc(id) + '"><div class="klogo">' + logo + '</div>' +
-        '<h3>' + esc(c.name) + '</h3><p>' + esc(c.about || "Description not added yet.") + '</p>' +
-        '<div class="kmeta">' + (st ? '<span class="chip">' + esc(st.name) + '</span>' : '<span class="chip off">No art style</span>') + note + '</div></button>';
+  function logoHtml(c) { return c.logoFile ? '<img src="' + esc(c.logoFile) + '?v=8" alt="' + esc(c.name) + ' logo" loading="lazy">' : monogram(c); }
+  function swatches(c) { return (c.colors || []).filter(function (k) { return validHex(k.hex); }).slice(0, 4).map(function (k) { return '<i style="background:' + esc(k.hex) + '"></i>'; }).join(""); }
+
+  /* ---------- views ---------- */
+  function companiesView(list) {
+    var u = !!locked;
+    var cards = list.map(function (id) {
+      var c = co(id), st = c.artStyle && pub.artstyles[c.artStyle], sc = score(c), sw = swatches(c);
+      var meter = u ? '<div class="meter" title="' + sc.pts + ' of ' + sc.of + ' brand basics in place"><span style="width:' + Math.round(sc.pts / sc.of * 100) + '%"></span></div><small class="mtxt">' + (sc.pts % 1 ? sc.pts.toFixed(1) : sc.pts) + ' / ' + sc.of + ' basics</small>' : '';
+      return '<button type="button" class="kcard" data-open="' + esc(id) + '"><div class="klogo">' + logoHtml(c) + '</div>' +
+        '<div class="kbody"><h3>' + esc(c.name) + '</h3><p>' + esc(c.about || "Description not added yet.") + '</p></div>' +
+        '<div class="kfoot">' + (sw ? '<span class="dots" aria-hidden="true">' + sw + '</span>' : '') + (st ? '<span class="chip">' + esc(st.name) + '</span>' : '<span class="chip off">No art style</span>') +
+        '<span class="go" aria-hidden="true">Open →</span></div>' + (u ? '<div class="kprog">' + meter + '</div>' : '') + '</button>';
+    }).join("");
+    return '<p class="vhint">Pick a company to see its colours, fonts, art style and what is still missing.</p><div class="kgrid">' + cards + '</div>';
+  }
+
+  function rulesView() {
+    var rules = pub.rules.concat(locked ? locked.rules : []).sort(function (a, b) { return a.order - b.order; });
+    var out = '<p class="vhint">These apply to every post, for every company.</p><ol class="rcards">' + rules.map(function (r, i) {
+      return '<li><span class="rnum">' + (i + 1) + '</span><div><p>' + esc(r.text) + '</p></div></li>';
+    }).join("") + '</ol>';
+    if (!locked) out += '<div class="lockhint">🔒 More rules appear once you enter the password above.</div>';
+    return out;
+  }
+
+  function stylesView(list) {
+    var sids = Object.keys(pub.artstyles).sort(function (a, b) { return pub.artstyles[a].name.localeCompare(pub.artstyles[b].name); });
+    return '<p class="vhint">The visual styles Claude can use for artwork. The companies using each style are shown on it.</p><div class="sgrid">' + sids.map(function (i) {
+      var st = pub.artstyles[i], users = list.filter(function (k) { return pub.companies[k].artStyle === i; });
+      return '<article class="scard"><h3>' + esc(st.name) + '</h3><p>' + esc(st.description) + '</p><div class="susers">' +
+        (users.length ? users.map(function (k) { return '<button type="button" class="upill" data-open="' + esc(k) + '">' + esc(pub.companies[k].name) + '</button>'; }).join("") : '<span class="chip off">Not used yet</span>') + '</div></article>';
     }).join("") + '</div>';
+  }
+
+  function gapsView(list) {
+    if (!locked) return '<div class="lockhint big">🔒 The gap table is private. Enter the password above to see what is missing for each company.</div>';
+    var heads = checks({}).map(function (x) { return x[0]; }), total = 0;
+    var rows = list.map(function (id) {
+      var c = co(id), ch = checks(c), g = ch.filter(function (x) { return x[1] !== "ok"; }).length; total += g;
+      return '<tr data-open="' + esc(id) + '" tabindex="0"><th scope="row"><span class="gl">' + logoHtml(c) + '</span>' + esc(c.name) + '</th>' + ch.map(function (x) {
+        return '<td class="g-' + x[1] + '" title="' + esc(x[0] + ': ' + GLAB[x[1]]) + '"><span>' + GLYPH[x[1]] + '</span></td>';
+      }).join("") + '<td class="gn">' + g + '</td></tr>';
+    }).join("");
+    return '<p class="vhint"><b>' + total + ' gaps</b> across ' + list.length + ' companies. Click a row to open that company.</p>' +
+      '<div class="legend"><span class="g-ok">✓ Have</span><span class="g-part">~ Partial or provisional</span><span class="g-miss">– Missing</span></div>' +
+      '<div class="scroll"><table class="gt"><thead><tr><th>Company</th>' + heads.map(function (t) { return '<th><span>' + esc(t) + '</span></th>'; }).join("") + '<th><span>Gaps</span></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
   }
 
   function render() {
@@ -104,42 +85,112 @@
     function s(b, l, hot) { return '<div class="stat' + (hot ? ' hot' : '') + '"><b>' + b + '</b><span>' + l + '</span></div>'; }
     $("stats").innerHTML = locked ? s(n.ready, "kits ready") + s(n.partial, "partial") + s(n.none, "no kit yet", n.none > 0) + s(pub.rules.length + locked.rules.length, "group rules") + s(open, "open items")
       : s(list.length, "kits") + s(Object.keys(pub.artstyles).length, "art styles");
-
-    var gb = gapsBody();
-    var html = cardsHtml(list) + sec("gaps", "What we have and what's missing", locked ? gapsBody.count : "", gb, locked ? '<p class="hint">✓ we have it · ~ partly or provisional · – missing. Click a company to open its kit.</p>' : "");
-
-    var rules = pub.rules.concat(locked ? locked.rules : []).sort(function (a, b) { return a.order - b.order; });
-    var rb = '<ul class="glist">' + rules.map(function (r) { return '<li><span>' + esc(r.text) + '</span><small>' + esc(r.tag) + '</small></li>'; }).join("") + (locked ? '' : '<li><span class="blur" aria-hidden="true">More rules are locked until the password is entered.</span></li>') + '</ul>';
-    html += sec("grp", "Group rules", rules.length + (locked ? "" : "+") + " rules", rb, '<p class="hint">Apply to every post, for every company.</p>');
-
-    var sids = Object.keys(pub.artstyles).sort(function (a, b) { return pub.artstyles[a].name.localeCompare(pub.artstyles[b].name); });
-    var sb = '<ul class="glist">' + sids.map(function (i) {
-      var st = pub.artstyles[i], users = list.filter(function (k) { return pub.companies[k].artStyle === i; }).map(function (k) { return pub.companies[k].name; });
-      return '<li><span><b style="font-weight:600">' + esc(st.name) + '</b><br>' + esc(st.description) + (users.length ? '<br><small>In use: ' + esc(users.join(", ")) + '</small>' : '') + '</span></li>';
-    }).join("") + '</ul>';
-    html += sec("styles", "Art styles", sids.length + " styles", sb, '<p class="hint">The visual styles Claude can use for artwork. Each company\'s kit shows which one is in use now.</p>');
-
-    html += list.map(function (id) {
-      var c = co(id);
-      var pill = locked ? '<span class="pill ' + (STATUS[c.status] || "p-neu") + '">' + esc(c.statusNote || "") + '</span>' : '';
-      return sec("c-" + id, esc(c.name) + " " + pill, "", companyBody(id), locked && c.summary ? '<p class="lead">' + esc(c.summary) + '</p>' : '');
-    }).join("");
-    $("root").innerHTML = html;
+    var tabs = [["companies", "Companies", list.length], ["rules", "Group rules", pub.rules.length + (locked ? locked.rules.length : 0)], ["styles", "Art styles", Object.keys(pub.artstyles).length], ["gaps", "Gaps", locked ? null : "🔒"]];
+    var nav = '<div class="vtabs" role="tablist" aria-label="Brand kit sections">' + tabs.map(function (t) {
+      return '<button type="button" role="tab" class="vtab" data-view="' + t[0] + '" aria-selected="' + (view === t[0]) + '">' + t[1] + (t[2] != null ? '<small>' + t[2] + '</small>' : '') + '</button>';
+    }).join("") + '</div>';
+    var body = view === "rules" ? rulesView() : view === "styles" ? stylesView(list) : view === "gaps" ? gapsView(list) : companiesView(list);
+    $("root").innerHTML = nav + '<div class="vpanel" role="tabpanel">' + body + '</div>';
+    if (cur) renderDrawer();
   }
 
-  document.addEventListener("toggle", function (e) { var t = e.target; if (t && t.dataset && t.dataset.id) openIds[t.dataset.id] = t.open; }, true);
+  /* ---------- drawer ---------- */
+  function lockedLine(label) { return '<div class="blurbox"><div class="sec-sub">' + esc(label) + '</div><p class="blur" aria-hidden="true">Locked until the password is entered. Locked until the password is entered.</p></div>'; }
+  function listHtml(items, empty) { return items && items.length ? '<ul class="todo">' + items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>' : '<p class="hint">' + empty + '</p>'; }
+  function field(label, v) { return '<div class="fld"><dt>' + label + '</dt><dd>' + (v ? esc(v) : '<span class="unset">Not set yet</span>') + '</dd></div>'; }
+
+  function panel(id, t) {
+    var c = co(id), u = !!locked, st = c.artStyle && pub.artstyles[c.artStyle], out = "";
+    if (t === "overview") {
+      var cs = c.colors || [];
+      out += '<h4>Colours</h4>' + (cs.length ? '<div class="swgrid">' + cs.map(function (k) {
+        var ok = validHex(k.hex);
+        return '<button type="button" class="swt"' + (ok ? ' data-copy="' + esc(k.hex.toUpperCase()) + '" title="Click to copy"' : ' disabled') + '><span class="swc" style="' + (ok ? 'background:' + esc(k.hex) : '') + '">' + (ok ? '' : 'No hex') + '</span><b>' + esc(k.name) + '</b><code>' + (ok ? esc(k.hex.toUpperCase()) : 'hex not set') + '</code>' + (k.role ? '<small>' + esc(k.role) + '</small>' : '') + '</button>';
+      }).join("") + '</div>' : '<p class="hint">No colours recorded yet.</p>');
+      out += '<h4>Brand basics</h4><dl class="flds">' + field("Typeface", c.typography) + field("Tagline", c.tagline) + field("Logo files", c.logo) + '</dl>';
+    } else if (t === "visual") {
+      out += '<h4>Art style in use</h4>' + (st ? '<div class="artbox"><b>' + esc(st.name) + '</b><p>' + esc(st.description) + '</p></div>' : '<p class="hint">No art style chosen yet.</p>');
+      out += '<h4>Look and feel</h4><dl class="flds">' + field("Imagery", c.imagery) + field("Layout", c.layout) + '</dl>';
+    } else if (t === "voice") {
+      if (!u) return lockedLine("Voice and claims") + lockedLine("Rules for this company");
+      out += '<h4>Voice and claims</h4>' + (c.voice ? '<p class="prose">' + esc(c.voice) + '</p>' : '<p class="hint">Not set yet.</p>');
+      out += '<h4>Rules for this company</h4>' + listHtml(c.rules, "No company-specific rules recorded.");
+    } else {
+      if (!u) return lockedLine("What is still missing");
+      var miss = checks(c).filter(function (x) { return x[1] !== "ok"; });
+      out += '<h4>Still missing</h4>' + (miss.length ? '<ul class="todo">' + miss.map(function (x) { return '<li>' + esc(x[0]) + (x[1] === "part" ? ' <em>provisional</em>' : '') + '</li>'; }).join("") + '</ul>' : '<p class="hint">Nothing missing.</p>');
+      out += '<h4>Open items</h4>' + listHtml(c.open, "No open items.") + (c.source ? '<p class="src">Source: ' + esc(c.source) + '</p>' : '');
+    }
+    return out;
+  }
+
+  function renderDrawer() {
+    var id = cur, c = co(id), u = !!locked, list = ids(), i = list.indexOf(id), sc = score(c);
+    var nopen = u ? checks(c).filter(function (x) { return x[1] !== "ok"; }).length : null;
+    var tabs = [["overview", "Brand"], ["visual", "Visual"], ["voice", "Voice & rules"], ["todo", "To do" + (nopen != null ? " (" + nopen + ")" : "")]];
+    var pill = u ? '<span class="pill ' + (STATUS[c.status] || "p-neu") + '">' + esc(c.statusNote || "") + '</span>' : '';
+    $("drawer").innerHTML =
+      '<div class="dhead"><div class="dnav"><button type="button" class="ibtn" data-step="-1" aria-label="Previous company">←</button><span class="dcount">' + (i + 1) + ' of ' + list.length + '</span><button type="button" class="ibtn" data-step="1" aria-label="Next company">→</button></div><button type="button" class="ibtn close" data-close aria-label="Close">✕</button></div>' +
+      '<div class="dhero"><div class="dlogo">' + logoHtml(c) + '</div><div><h2 id="dtitle">' + esc(c.name) + '</h2>' + pill + '</div></div>' +
+      '<p class="dabout">' + esc(c.about || "Description not added yet.") + '</p>' + (u && c.summary ? '<p class="dsum">' + esc(c.summary) + '</p>' : '') +
+      '<div class="dtabs" role="tablist">' + tabs.map(function (t) { return '<button type="button" role="tab" class="dtab" data-tab="' + t[0] + '" aria-selected="' + (tab === t[0]) + '">' + t[1] + '</button>'; }).join("") + '</div>' +
+      '<div class="dbody" role="tabpanel">' + panel(id, tab) + '</div>';
+  }
+
+  function openCo(id, keepTab) {
+    if (!pub.companies[id]) return;
+    if (!cur) lastFocus = document.activeElement;
+    cur = id; if (!keepTab) tab = "overview";
+    renderDrawer();
+    $("scrim").hidden = false; $("drawer").hidden = false;
+    requestAnimationFrame(function () { document.body.classList.add("dopen"); var cb = $("drawer").querySelector(".close"); if (cb) cb.focus({ preventScroll: true }); });
+    try { history.replaceState(null, "", "#" + id); } catch (e) {}
+  }
+  function closeCo() {
+    if (!cur) return; cur = null; document.body.classList.remove("dopen");
+    setTimeout(function () { if (!cur) { $("scrim").hidden = true; $("drawer").hidden = true; } }, 220);
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    if (lastFocus && lastFocus.focus) try { lastFocus.focus({ preventScroll: true }); } catch (e) {}
+  }
+  function toast(msg) {
+    var t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("on"); }, 1600);
+  }
+  function copy(text) {
+    function ok() { toast("Copied " + text); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, function () { toast(text); }); else toast(text);
+  }
+
   document.addEventListener("click", function (e) {
-    var b = e.target.closest("[data-goto]"); if (!b) return;
-    var key = "c-" + b.getAttribute("data-goto"); openIds[key] = true;
-    var el = document.querySelector('details[data-id="' + key + '"]'); if (el) { el.open = true; el.scrollIntoView({ behavior: "smooth", block: "start" }); }
+    var el;
+    if ((el = e.target.closest("[data-view]"))) { view = el.getAttribute("data-view"); render(); return; }
+    if ((el = e.target.closest("[data-copy]"))) { copy(el.getAttribute("data-copy")); return; }
+    if ((el = e.target.closest("[data-tab]"))) { tab = el.getAttribute("data-tab"); renderDrawer(); var t = $("drawer").querySelector('.dtab[aria-selected="true"]'); if (t) t.focus({ preventScroll: true }); return; }
+    if ((el = e.target.closest("[data-step]"))) { var l = ids(), i = (l.indexOf(cur) + parseInt(el.getAttribute("data-step"), 10) + l.length) % l.length; cur = l[i]; renderDrawer(); $("drawer").scrollTop = 0; try { history.replaceState(null, "", "#" + cur); } catch (x) {} return; }
+    if (e.target.closest("[data-close]") || e.target.id === "scrim") { closeCo(); return; }
+    if ((el = e.target.closest("[data-open]"))) { openCo(el.getAttribute("data-open")); }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && cur) { closeCo(); return; }
+    if (cur && (e.key === "ArrowRight" || e.key === "ArrowLeft") && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) {
+      var b = $("drawer").querySelector('[data-step="' + (e.key === "ArrowRight" ? 1 : -1) + '"]'); if (b) b.click(); return;
+    }
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("tr[data-open]")) { e.preventDefault(); openCo(e.target.getAttribute("data-open")); }
+    if (cur && e.key === "Tab") { // keep focus inside the drawer
+      var f = $("drawer").querySelectorAll("button:not([disabled])"); if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      else if (!$("drawer").contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    }
   });
 
   fetch("data/brandkit.public.json").then(function (r) { return r.json(); }).then(function (d) {
     pub = d; render();
+    var h = (location.hash || "").replace("#", ""); if (h && pub.companies[h]) openCo(h);
     Lock.init({
       blobUrl: "data/brandkit.locked.json",
       onUnlock: function (text) { locked = JSON.parse(text); render(); },
-      onLock: function () { locked = null; render(); }
+      onLock: function () { locked = null; if (view === "gaps") view = "companies"; render(); }
     });
   }).catch(function () { $("root").innerHTML = '<div class="empty">Could not load the brand kit data.</div>'; });
 })();
