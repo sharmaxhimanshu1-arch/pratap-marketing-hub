@@ -54,7 +54,7 @@ body.home{background:#FBFDFC}
 .tbody p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.55;flex:1}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .tag{font:600 11.5px var(--sans);background:var(--chip);color:var(--fg);padding:3px 10px;border-radius:99px}
-.tag.lock{background:#FFF4E0;color:#8A5A00}.tag.samp{background:#EEF1FF;color:#33479E}
+.tag.samp{background:#EEF1FF;color:#33479E}
 .tgo{margin-top:10px;font:700 14px var(--sans);color:var(--green);display:inline-flex;gap:6px;align-items:center}
 .tool:hover .tgo span{transform:translateX(4px)}.tgo span{transition:.2s}
 /* mini previews */

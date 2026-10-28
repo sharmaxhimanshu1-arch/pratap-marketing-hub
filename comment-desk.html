@@ -7,26 +7,12 @@
 <link rel="stylesheet" href="assets/site.css?v=8">
 </head><body>
 <nav class="nav" aria-label="Site"><a class="brand" href="index.html" aria-label="Pratap Marketing Hub home"><img src="assets/pratap-logo.svg?v=4" alt="Pratap Group, Carving Lives"><span class="sr">Marketing Hub</span></a><a href="brand-kit.html">Brand Kit</a><a href="comment-desk.html" aria-current="page">Comment Desk</a><a href="analytics.html">Analytics</a></nav>
-<div class="wrap">
- <header class="top">
-  <h1>Pratap Comment Desk</h1>
-  <p class="sub">This page is locked. Enter the password above to open it.</p>
- </header>
- <div class="blurbox blur" aria-hidden="true"><p class="text">Locked content is hidden until the password is entered. Locked content is hidden until the password is entered.</p><p class="text">Locked content is hidden until the password is entered.</p></div>
-</div>
-<iframe id="desk" title="Comment Desk" hidden sandbox="allow-scripts allow-same-origin"></iframe>
-<script src="assets/lock.js?v=6"></script>
+<iframe id="desk" title="Comment Desk" src="data/comment-desk.html" sandbox="allow-scripts allow-same-origin"></iframe>
 <script>
 (function(){
-  var f=document.getElementById("desk"),wrap=document.querySelector(".wrap"),timer=null;
+  var f=document.getElementById("desk"),timer=null;
   function fit(){try{var d=f.contentDocument;if(d&&d.documentElement)f.style.height=d.documentElement.scrollHeight+"px"}catch(e){}}
-  Lock.init({blobUrl:"data/comment-desk.locked.json",
-    onUnlock:function(html){
-      wrap.hidden=true;f.hidden=false;
-      f.srcdoc='<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+html;
-      f.onload=function(){fit();clearInterval(timer);timer=setInterval(fit,500)};
-    },
-    onLock:function(){clearInterval(timer);f.srcdoc="";f.hidden=true;wrap.hidden=false}});
+  f.onload=function(){fit();clearInterval(timer);timer=setInterval(fit,500)};
 })();
 </script>
 </body></html>

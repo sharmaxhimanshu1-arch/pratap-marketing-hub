@@ -158,7 +158,7 @@
   }
 
   /* ---------- helpers for the layout ---------- */
-  var sel = "All", sortKey = "imp", sortDir = -1, chartSeries = null;
+  var loadFailed = false, sel = "All", sortKey = "imp", sortDir = -1, chartSeries = null;
   function dayKey(t) { var d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); }
   function halfDelta(arr, f) {
     if (arr.length < 6) return null;
@@ -273,11 +273,9 @@
   }
 
   function emptyState() {
-    var locked = !base;
-    return '<div class="emptyc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (locked ? '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>' : '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>') + '</svg>' +
-      "<h2>" + (locked ? "This week's numbers are locked" : "No numbers for these pages yet") + "</h2>" +
-      "<p>" + (locked ? "Enter the password in the bar above to see views, engagement and follower growth for every page." : "Add a LinkedIn export, or look at sample numbers to see how this page reads.") + "</p>" +
-      '<div class="actions">' + (locked ? '<button class="btn primary" type="button" data-act="unlock">Unlock numbers</button>' : '<button class="btn primary" type="button" data-act="tools">Add LinkedIn export</button>') + '<button class="btn" type="button" data-act="sample">Try sample numbers</button></div></div>';
+    return '<div class="emptyc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>' +
+      "<h2>No numbers yet</h2><p>" + (loadFailed ? "This week's numbers could not be loaded. Reload the page, or add a LinkedIn export yourself." : "Add a LinkedIn export, or look at sample numbers to see how this page reads.") + "</p>" +
+      '<div class="actions"><button class="btn primary" type="button" data-act="tools">Add LinkedIn export</button><button class="btn" type="button" data-act="sample">Try sample numbers</button></div></div>';
   }
 
   function render() {
@@ -378,7 +376,7 @@
     if (base && baseInfo) { t = baseInfo.week + (baseInfo.range ? " · " + baseInfo.range : ""); c = "live"; }
     else if (sample) { t = "Sample numbers, made up"; c = "sample"; }
     else if (Object.keys(data).some(function (k) { return data[k].__mine; })) { t = "Your uploads · this browser only"; c = "mine"; }
-    else { t = "Locked"; c = "locked"; }
+    else { t = "No numbers yet"; c = "none"; }
     el.className = "state " + c; el.textContent = t;
   }
 
@@ -444,20 +442,17 @@
         var a = b.getAttribute("data-act");
         if (a === "tools") openTools();
         else if (a === "sample") startSample();
-        else if (a === "unlock") { window.scrollTo({ top: 0, behavior: calm() }); var pw = $("pw"); if (pw) pw.focus(); }
       }
     });
     document.addEventListener("change", function (e) { if (e.target.id === "sortSel") { sortKey = e.target.value; sortDir = sortKey === "n" ? 1 : -1; render(); var s = $("sortSel"); if (s) s.focus(); } });
     var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(drawChart, 120); });
 
-    if (window.Lock) Lock.init({ blobUrl: "data/analytics.locked.json",
-      onUnlock: function (txt) {
-        try { var o = JSON.parse(txt); base = o.data; baseInfo = o; } catch (e) { return; }
-        if (!sample) { var mine = data; data = {}; Object.keys(base).forEach(function (k) { data[k] = base[k]; }); Object.keys(mine).forEach(function (k) { if (mine[k].__mine) data[k] = mine[k]; }); }
-        setNote(baseInfo.week + " loaded (" + baseInfo.range + "). Files you add here replace a page for this browser only.");
-        render();
-      },
-      onLock: function () { base = null; baseInfo = null; if (!sample) { var m = {}; Object.keys(data).forEach(function (k) { if (data[k].__mine) m[k] = data[k]; }); data = m; } setNote(""); render(); } });
+    fetch("data/analytics.json", { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (o) {
+      base = o.data; baseInfo = o;
+      if (!sample) { var mine = data; data = {}; Object.keys(base).forEach(function (k) { data[k] = base[k]; }); Object.keys(mine).forEach(function (k) { if (mine[k].__mine) data[k] = mine[k]; }); }
+      setNote(baseInfo.week + " loaded (" + baseInfo.range + "). Files you add here replace a page for this browser only.");
+      render();
+    }).catch(function () { loadFailed = true; render(); });
     render();
   }
   init();
