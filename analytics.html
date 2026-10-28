@@ -5,50 +5,56 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/site.css?v=8">
+<link rel="stylesheet" href="assets/analytics.css?v=2">
 </head><body>
 <nav class="nav" aria-label="Site"><a class="brand" href="index.html" aria-label="Pratap Marketing Hub home"><img src="assets/pratap-logo.svg?v=4" alt="Pratap Group, Carving Lives"><span class="sr">Marketing Hub</span></a><a href="brand-kit.html">Brand Kit</a><a href="comment-desk.html">Comment Desk</a><a href="analytics.html" aria-current="page">Analytics</a></nav>
 <main class="wrap">
- <header class="top">
-  <h1>LinkedIn Analytics</h1>
-  <p class="sub">How the pages are doing, explained in plain language from your real LinkedIn numbers.</p>
-  <span class="badge">Weekly numbers are password-locked</span> <span class="warnbadge" id="sampleBadge" hidden>Sample numbers, made up</span>
+ <header class="an-head">
+  <div>
+   <h1>LinkedIn Analytics</h1>
+   <p class="sub">How every Pratap Group page is doing, in plain language.</p>
+  </div>
+  <div class="an-actions">
+   <span class="state locked" id="status" role="status">Locked</span>
+   <button class="btn" type="button" data-act="tools">Add LinkedIn export</button>
+  </div>
  </header>
 
- <details class="block sec" id="how">
-  <summary><div class="block-h" style="width:100%"><h2>How the weekly numbers get here</h2><span class="tog"></span></div></summary>
+ <section id="out" aria-live="polite"></section>
+
+ <details class="block sec" id="tools" style="margin-top:40px">
+  <summary><div class="block-h" style="width:100%"><h2>Add data yourself</h2><span class="count">optional</span><span class="tog"></span></div></summary>
+  <p class="hint">Weekly numbers normally arrive on their own. Use this to check a single LinkedIn export. The file is read inside your browser. It is not uploaded or saved on the site.</p>
+  <div class="drop" id="drop">
+   <select id="company" aria-label="Company"></select>
+   <span class="filebtn"><button class="btn primary" type="button">Add LinkedIn export</button><input type="file" id="file" accept=".xls,.xlsx,.csv" aria-label="LinkedIn export file"></span>
+   <span class="grow">or drop the file here</span>
+   <button class="btn" data-act="sample" type="button">Try sample numbers</button>
+   <button class="btn" id="clearBtn" type="button">Clear all</button>
+   <span class="mono" id="note" style="flex-basis:100%;color:var(--muted)" role="status"></span>
+  </div>
+  <div class="sec-sub">How the weekly numbers get here</div>
   <ol class="rules">
    <li>Every Monday, export <b>Content</b> (30 days), <b>Followers</b> (365 days) and <b>Visitors</b> for each page and drop them in the week's folder on Drive.</li>
-   <li>Ask Claude to refresh the hub. Unlock this page and the new week appears.</li>
-   <li>To check a single file yourself instead: open a page on LinkedIn as admin, go to <b>Analytics</b> and use <b>Export</b>.</li>
-   <li>Pick the company below and drop that file in. It stays in your browser only.</li>
+   <li>Ask Claude to refresh the hub, then unlock this page with the password.</li>
+   <li>To check one file yourself: open the page on LinkedIn as admin, go to <b>Analytics</b>, use <b>Export</b>, then pick the company above and add the file.</li>
   </ol>
-  <p class="hint">This works until LinkedIn approves API access, after which the numbers can arrive on their own. The files are read inside your browser. They are not uploaded anywhere or saved on the site. Menu names on LinkedIn change now and then, so if a step looks different, look for the Export button in Analytics.</p>
+  <p class="hint">Menu names on LinkedIn change now and then. If a step looks different, look for the Export button in Analytics.</p>
  </details>
 
- <div class="drop" id="drop">
-  <select id="company" aria-label="Company"></select>
-  <span class="filebtn"><button class="btn primary" type="button">Add LinkedIn export</button><input type="file" id="file" accept=".xls,.xlsx,.csv" aria-label="LinkedIn export file"></span>
-  <span class="grow">or drop the file here</span>
-  <button class="btn" id="sampleBtn" type="button">Try sample numbers</button>
-  <button class="btn" id="clearBtn" type="button">Clear all</button>
-  <span class="mono" id="note" style="flex-basis:100%;color:var(--muted)" role="status"></span>
- </div>
-
- <section id="out" style="margin-top:28px"></section>
-
- <details class="block sec" id="gloss" style="margin-top:28px">
+ <details class="block sec" id="gloss">
   <summary><div class="block-h" style="width:100%"><h2>What the words mean</h2><span class="tog"></span></div></summary>
   <dl class="gloss">
    <dt>Views (impressions)</dt><dd>How many times a post appeared on someone's screen. One person can count more than once.</dd>
-   <dt>Reactions, comments, shares, clicks</dt><dd>Each is a small action someone took on a post. Added together, they show how many views led to something.</dd>
-   <dt>Per 100 views</dt><dd>A fairer way to compare. If the number is 4, then out of every 100 times the post was shown, about 4 led to an action.</dd>
-   <dt>Second half vs first half</dt><dd>The period is split in the middle. If views are up, the second half did better than the first. It is a quick way to see direction.</dd>
+   <dt>Actions</dt><dd>Reactions, comments, shares and link clicks added together. They show how many views led to something.</dd>
+   <dt>Per 100 views</dt><dd>A fairer way to compare pages. If the number is 4, then out of every 100 times a post was shown, about 4 led to an action.</dd>
+   <dt>Second half vs first half</dt><dd>The period is split in the middle. An up arrow means the second half did better than the first. It is a quick way to see direction, not a forecast.</dd>
    <dt>New followers</dt><dd>People who started following the page during the period. It does not include people who left.</dd>
   </dl>
-  <p class="hint">The page compares your pages with each other and with their own earlier weeks. It does not compare with other companies, because those figures need a proper source.</p>
+  <p class="hint">Pages are compared with each other and with their own earlier weeks. They are not compared with other companies, because those figures need a proper source.</p>
  </details>
 </main>
 <script src="assets/lock.js?v=6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="assets/analytics.js?v=5"></script>
+<script src="assets/analytics.js?v=7"></script>
 </body></html>
