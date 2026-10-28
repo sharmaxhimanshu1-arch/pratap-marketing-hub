@@ -2,46 +2,111 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pratap Marketing Hub</title>
 <meta name="robots" content="noindex">
+<meta name="description" content="One place for the LinkedIn work across every Pratap Group company: brand rules, comments that need a person, and results in plain language.">
+<meta name="theme-color" content="#1AB86B">
+<meta property="og:type" content="website"><meta property="og:title" content="Pratap Marketing Hub"><meta property="og:description" content="Every Pratap Group post, on brand and on time. Brand Kit, Comment Desk and Analytics in one place.">
+<meta property="og:image" content="https://sharmaxhimanshu1-arch.github.io/pratap-marketing-hub/assets/hero.jpg"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='%231AB86B'/%3E%3Cstop offset='1' stop-color='%230E9AC1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M22 48V16h13a10 10 0 010 20H22' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=7">
-</head><body>
+<link rel="stylesheet" href="assets/site.css?v=8">
+<link rel="stylesheet" href="assets/home.css?v=3">
+</head><body class="home">
 <nav class="nav" aria-label="Site"><a class="brand" href="index.html" aria-label="Pratap Marketing Hub home"><img src="assets/pratap-logo.svg?v=4" alt="Pratap Group, Carving Lives"><span class="sr">Marketing Hub</span></a><a href="brand-kit.html">Brand Kit</a><a href="comment-desk.html">Comment Desk</a><a href="analytics.html">Analytics</a></nav>
 <main class="wrap">
- <section class="hero">
+ <section class="h-hero">
   <div>
-   <span class="kicker">Pratap Group · Marketing</span>
-   <h1>Pratap Marketing Hub</h1>
-   <p class="sub">One place for the LinkedIn work across every company in Pratap Group: the brand rules behind each post, and the conversations that need a person.</p>
-   <div class="actions"><a class="btn primary" href="brand-kit.html" style="text-decoration:none;padding:10px 22px">Open Brand Kit</a><a class="btn" href="comment-desk.html" style="text-decoration:none;padding:10px 22px">Open Comment Desk</a></div>
+   <span class="hi"><i></i><span id="greet">Welcome</span> to the team hub</span>
+   <h1>Every Pratap Group post, <em>on brand</em> and on time.</h1>
+   <p class="lead">One place for the LinkedIn work across every company in Pratap Group: the brand rules behind each post, and the conversations that need a person.</p>
+   <a class="resume" id="resume" href="#" hidden><span class="rdot"></span><span>Continue where you left off: <b id="rlabel"></b></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+   <div class="h-cta">
+    <a class="hbtn pri" href="brand-kit.html">Open Brand Kit <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    <a class="hbtn" href="comment-desk.html">Open Comment Desk</a>
+   </div>
   </div>
-  <div class="hero-art" aria-hidden="true"><i></i><i></i><i></i><i></i><img id="hero-img" src="assets/hero.jpg?v=4" alt="" onload="this.classList.add('ok')" onerror="this.remove()"></div>
- </section>
- <section class="grid2" aria-label="Pages">
-  <a class="tile" href="brand-kit.html">
-   <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="11" cy="12" r="7" fill="#1AB86B"/><circle cx="21" cy="12" r="7" fill="#0E9AC1" opacity=".85"/><circle cx="16" cy="21" r="7" fill="#14201C" opacity=".9"/></svg>
-   <h2>Brand Kit</h2>
-   <p>Colours, typefaces, art styles and rules for each company, and a clear view of what is still missing.</p>
-   <span class="go">Open →</span>
-  </a>
-  <a class="tile" href="comment-desk.html">
-   <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M5 7h22v14H14l-6 5v-5H5z" stroke="#14201C" stroke-width="2.2" stroke-linejoin="round"/><path d="M10 12h12M10 16h7" stroke="#0E9AC1" stroke-width="2.2" stroke-linecap="round"/></svg>
-   <h2>Comment Desk</h2>
-   <p>Comments across the company pages, sorted by what needs a person. Locked, and showing sample data until LinkedIn approves API access.</p>
-   <span class="go">Open →</span>
-  </a>
-  <a class="tile" href="analytics.html">
-   <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M6 25V15M13 25V8M20 25V18M27 25V11" stroke="#0E9AC1" stroke-width="3.2" stroke-linecap="round"/><path d="M4 27h24" stroke="#14201C" stroke-width="2" stroke-linecap="round"/></svg>
-   <h2>Analytics</h2>
-   <p>How the LinkedIn pages are doing, explained in plain language from the numbers you export.</p>
-   <span class="go">Open →</span>
-  </a>
-  <div class="tile soon" aria-label="Coming later">
-   <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M6 24V14M13 24V8M20 24V17M27 24V11" stroke="#52615B" stroke-width="3" stroke-linecap="round"/></svg>
-   <h2>More to come</h2>
-   <p>Other LinkedIn tools will be added here as they are built.</p>
+  <div class="h-art" aria-hidden="true">
+   <img src="assets/hero.jpg?v=4" alt="">
+   <div class="glass g1"><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13M9 21v-6h6v6"/></svg></span><div><b id="n-co">9</b><span>companies</span></div></div>
+   <div class="glass g2"><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></span><div><b id="n-st">20</b><span>art styles</span></div></div>
+   <div class="glass g3"><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg></span><div><b>8</b><span>LinkedIn pages</span></div></div>
   </div>
  </section>
- <p class="foot">Internal marketing tools for Pratap Group. Some details are locked behind a password.</p>
+
+ <section class="new rv" aria-label="What is new">
+  <span class="nt">New this week</span>
+  <a href="brand-kit.html#art"><b>Art style manager</b> 20 templates, one style per company</a>
+  <a href="comment-desk.html"><b>Comment Desk triage</b> urgency sort, search, shortcuts</a>
+  <a href="brand-kit.html"><b>Brand Kit panel</b> colours you can copy in one click</a>
+ </section>
+
+ <div class="sh rv" id="companies"><div><h2>Nine companies, one hub</h2><p>Tap a company to open its kit: colours, fonts, art style and what is still missing.</p></div></div>
+ <section class="cgrid" id="cgrid" aria-label="Companies in Pratap Group"></section>
+
+ <div class="sh rv"><div><h2>Your tools</h2><p>Everything the marketing team needs for LinkedIn, in one place.</p></div></div>
+ <section class="tools" aria-label="Tools">
+  <a class="tool rv" href="brand-kit.html">
+   <div class="prev"><div class="mk" id="mk-prev" aria-hidden="true"></div></div>
+   <div class="tbody"><h3>Brand Kit</h3><p>Colours, typefaces, art styles and rules for each company, with a clear view of what is still missing.</p><div class="tags"><span class="tag">9 companies</span><span class="tag">Art style manager</span><span class="tag lock">Some details locked</span></div><span class="tgo">Open <span>→</span></span></div>
+  </a>
+  <a class="tool rv d1" href="comment-desk.html">
+   <div class="prev" aria-hidden="true"><div class="cm"><div><span class="pl">Needs a human</span><span>Complaint</span><span class="tm">45h left</span></div><p>Two weeks of delay now and nobody picks up the phone.</p></div><div class="cm b"><div><span class="pl">Question</span><span>Replies ready</span><span class="tm">6h left</span></div><p>Do you also supply ducting and splicing?</p></div></div>
+   <div class="tbody"><h3>Comment Desk</h3><p>Comments across the company pages, sorted by what needs a person. You write every reply.</p><div class="tags"><span class="tag lock">Locked</span><span class="tag samp">Sample data until LinkedIn approves API access</span></div><span class="tgo">Open <span>→</span></span></div>
+  </a>
+  <a class="tool rv d2" href="analytics.html">
+   <div class="prev" aria-hidden="true"><div class="an"><b style="height:42%"></b><b style="height:64%"></b><b style="height:50%"></b><b style="height:82%"></b><b style="height:58%"></b><b style="height:96%"></b><b style="height:74%"></b></div></div>
+   <div class="tbody"><h3>Analytics</h3><p>How the LinkedIn pages are doing, explained in plain language from the numbers you export.</p><div class="tags"><span class="tag">Files stay in your browser</span></div><span class="tgo">Open <span>→</span></span></div>
+  </a>
+ </section>
+
+ <div class="sh rv"><div><h2>How a post flows</h2><p>The loop the whole team follows, from brand rules to learning what worked.</p></div></div>
+ <section class="flow rv" aria-label="Workflow">
+  <div class="step"><h3>Check the brand</h3><p>Colours, fonts, art style and rules for the company you are posting as.</p><a href="brand-kit.html">Brand Kit →</a></div>
+  <div class="step"><h3>Create the post</h3><p>Pick the next topic, choose an art style, and make the creative.</p><a href="brand-kit.html#art">Art styles →</a></div>
+  <div class="step"><h3>Handle the replies</h3><p>Comments are sorted by urgency. You write every answer yourself.</p><a href="comment-desk.html">Comment Desk →</a></div>
+  <div class="step"><h3>Learn what worked</h3><p>Drop in a LinkedIn export and read the results in plain language.</p><a href="analytics.html">Analytics →</a></div>
+ </section>
+
+ <div class="sh rv"><div></div></div>
+ <section class="jump rv" aria-label="Jump to a company">
+  <div style="position:relative;z-index:1"><h2>Jump to a company</h2><p>Start typing a name and open that company's brand kit.<span class="kbd">/</span><span class="kbd">Ctrl K</span></p></div>
+  <div class="jbox"><input type="text" id="jq" placeholder="Try &ldquo;Ductel&rdquo; or &ldquo;Voltters&rdquo;" aria-label="Search companies" autocomplete="off"><div class="jres" id="jres"></div></div>
+ </section>
+
+ <footer class="hfoot"><span><b>Pratap Group</b> · Internal marketing tools. Some details are locked behind a password.</span><span class="cl">Carving Lives</span></footer>
 </main>
+<script>
+(function(){
+  var ORDER=["pratap-group","telecrats","beckhaul","corsis","ductel","pratap-diesels","pals","voltters","pratap-automobiles"];
+  function $(i){return document.getElementById(i);}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  var h=new Date().getHours();$("greet").textContent=h<5?"Working late":h<12?"Good morning":h<17?"Good afternoon":"Good evening";
+  var io="IntersectionObserver" in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.15}):null;
+  [].forEach.call(document.querySelectorAll(".rv"),function(el){io?io.observe(el):el.classList.add("in");});
+  try{var last=JSON.parse(localStorage.getItem("pmh-last")||"null");if(last&&last.url&&last.label){$("resume").href=last.url;$("rlabel").textContent=last.label;$("resume").hidden=false;}}catch(e){}
+  document.addEventListener("keydown",function(e){if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("jq").focus();$("jq").scrollIntoView({block:"center",behavior:"smooth"});}});
+  fetch("data/brandkit.public.json").then(function(r){return r.json();}).then(function(d){
+    var ids=Object.keys(d.companies).sort(function(a,b){var x=ORDER.indexOf(a),y=ORDER.indexOf(b);return (x<0?99:x)-(y<0?99:y);});
+    $("n-co").textContent=ids.length;
+    function logo(c){return c.logoFile?'<img src="'+esc(c.logoFile)+'?v=8" alt="" loading="lazy">':'<span class="mono-l">'+esc(c.name)+'</span>';}
+    var edits={styles:{},assign:{}};try{var _e=JSON.parse(localStorage.getItem("pmh-kit-edits")||"null");if(_e&&_e.styles&&_e.assign)edits=_e;}catch(e){}
+    var STY={};Object.keys(d.artstyles).forEach(function(k){STY[k]=d.artstyles[k];});Object.keys(edits.styles).forEach(function(k){if(edits.styles[k]===null)delete STY[k];else STY[k]=edits.styles[k];});
+    $("n-st").textContent=Object.keys(STY).length;
+    function monog(c){var w=String(c.name).replace(/^Pratap\s+/i,"").split(/\s+/)[0];return '<span class="cmono">'+esc(w.charAt(0))+'</span>';}
+    $("cgrid").innerHTML=ids.map(function(id,i){var c=d.companies[id],sid=Object.prototype.hasOwnProperty.call(edits.assign,id)?edits.assign[id]:c.artStyle,st=sid&&STY[sid];
+      var dots=(c.colors||[]).filter(function(k){return /^#[0-9a-f]{6}$/i.test(k.hex||"");}).slice(0,5).map(function(k){return '<i style="background:'+esc(k.hex)+'" title="'+esc(k.name)+'"></i>';}).join("");
+      return '<a class="cc rv" style="transition-delay:'+(i%3)*70+'ms" href="brand-kit.html#'+esc(id)+'"><div class="cl">'+(c.logoFile?'<img src="'+esc(c.logoFile)+'?v=8" alt="" loading="lazy">':monog(c))+'</div><div class="cb"><h3>'+esc(c.name)+'</h3><p>'+esc(c.about||"Description coming soon.")+'</p><div class="cf"><span class="dots">'+dots+'</span>'+(st?'<span class="chip2">'+esc(st.name)+'</span>':'<span class="chip2 off">No art style yet</span>')+'<span class="cgo">Open →</span></div></div></a>';}).join("");
+    [].forEach.call(document.querySelectorAll("#cgrid .rv"),function(el){io?io.observe(el):el.classList.add("in");});
+    var withLogo=ids.filter(function(i){return d.companies[i].logoFile;}).slice(1,4);
+    $("mk-prev").innerHTML=withLogo.map(function(i){var c=d.companies[i],dots=(c.colors||[]).filter(function(k){return /^#[0-9a-f]{6}$/i.test(k.hex||"");}).slice(0,3).map(function(k){return '<b style="background:'+esc(k.hex)+'"></b>';}).join("");return '<div><img src="'+esc(c.logoFile)+'?v=8" alt=""><i>'+dots+'</i><span class="mbar"><u style="width:'+(40+Math.round(Math.random()*50))+'%"></u></span></div>';}).join("");
+    function show(q){
+      q=q.trim().toLowerCase();var list=ids.filter(function(i){return !q||d.companies[i].name.toLowerCase().indexOf(q)>-1;}).slice(0,q?9:5);
+      $("jres").innerHTML=list.length?list.map(function(i){var c=d.companies[i];return '<a href="brand-kit.html#'+esc(i)+'"><span>'+(c.logoFile?'<img src="'+esc(c.logoFile)+'?v=8" alt="">':'<b>'+esc(c.name.charAt(0))+'</b>')+'</span>'+esc(c.name)+'</a>';}).join(""):'<span style="color:#A9BDB6;font-size:14px">No company with that name.</span>';
+    }
+    show("");$("jq").addEventListener("input",function(){show(this.value);});
+    $("jq").addEventListener("keydown",function(e){if(e.key==="Enter"){var a=$("jres").querySelector("a");if(a)location.href=a.href;}});
+  }).catch(function(){});
+  document.addEventListener("keydown",function(e){if(e.key==="/"&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$("jq").focus();$("jq").scrollIntoView({block:"center",behavior:"smooth"});}});
+})();
+</script>
 </body></html>

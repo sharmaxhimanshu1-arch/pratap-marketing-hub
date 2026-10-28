@@ -241,3 +241,5 @@ aside summary{font:700 18px var(--serif)}
 .eye{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:38px;height:34px;display:flex;align-items:center;justify-content:center;border:0;background:none;color:var(--muted);cursor:pointer;border-radius:6px}
 .eye:hover{color:var(--fg)}
 .eye:focus-visible{outline:2px solid var(--fg);outline-offset:1px}
+
+@media (max-width:520px){.nav{gap:2px 12px;flex-wrap:nowrap}.nav .brand img{height:32px}.nav a:not(.brand){font-size:12.5px;padding-inline:0;white-space:nowrap}}

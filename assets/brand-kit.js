@@ -202,7 +202,7 @@
     renderDrawer();
     $("scrim").hidden = false; $("drawer").hidden = false;
     requestAnimationFrame(function () { document.body.classList.add("dopen"); var cb = $("drawer").querySelector(".close"); if (cb) cb.focus({ preventScroll: true }); });
-    try { history.replaceState(null, "", "#" + id); } catch (e) {}
+    try { history.replaceState(null, "", "#" + id); localStorage.setItem("pmh-last", JSON.stringify({ url: "brand-kit.html#" + id, label: "Brand Kit · " + pub.companies[id].name })); } catch (e) {}
   }
   function closeCo() {
     if (!cur) return; cur = null; document.body.classList.remove("dopen");
@@ -284,7 +284,8 @@
 
   fetch("data/brandkit.public.json").then(function (r) { return r.json(); }).then(function (d) {
     pub = d; render();
-    var h = (location.hash || "").replace("#", ""); if (h && pub.companies[h]) openCo(h);
+    var h = (location.hash || "").replace("#", "");
+    if (h === "art" || h === "styles") { view = "styles"; render(); } else if (h === "rules") { view = "rules"; render(); } else if (h && pub.companies[h]) openCo(h);
     Lock.init({
       blobUrl: "data/brandkit.locked.json",
       onUnlock: function (text) { locked = JSON.parse(text); render(); },
