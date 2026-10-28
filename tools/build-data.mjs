@@ -40,4 +40,7 @@ writeFileSync("data/brandkit.locked.json", JSON.stringify(await encrypt(JSON.str
 // Comment Desk: the whole page is encrypted.
 const desk = readFileSync(`${dir}/comment-desk.source.html`, "utf8");
 writeFileSync("data/comment-desk.locked.json", JSON.stringify(await encrypt(desk)));
+// Analytics: this week's LinkedIn numbers, encrypted.
+const an = readFileSync(`${dir}/analytics.source.json`, "utf8");
+writeFileSync("data/analytics.locked.json", JSON.stringify(await encrypt(an)));
 console.log("Built data/*.json");

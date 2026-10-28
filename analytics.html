@@ -11,15 +11,16 @@
  <header class="top">
   <h1>LinkedIn Analytics</h1>
   <p class="sub">How the pages are doing, explained in plain language from your real LinkedIn numbers.</p>
-  <span class="badge">Numbers stay in your browser</span> <span class="warnbadge" id="sampleBadge" hidden>Sample numbers, made up</span>
+  <span class="badge">Weekly numbers are password-locked</span> <span class="warnbadge" id="sampleBadge" hidden>Sample numbers, made up</span>
  </header>
 
  <details class="block sec" id="how">
-  <summary><div class="block-h" style="width:100%"><h2>How to add your numbers</h2><span class="tog"></span></div></summary>
+  <summary><div class="block-h" style="width:100%"><h2>How the weekly numbers get here</h2><span class="tog"></span></div></summary>
   <ol class="rules">
-   <li>Open a company page on LinkedIn as admin and go to its <b>Analytics</b>.</li>
-   <li>Choose <b>Content</b>, pick a date range (30 days works well), and use <b>Export</b>. Do the same under <b>Followers</b> if you want follower numbers.</li>
-   <li>Pick the company below and drop the downloaded file in. Repeat for each page.</li>
+   <li>Every Monday, export <b>Content</b> (30 days), <b>Followers</b> (365 days) and <b>Visitors</b> for each page and drop them in the week's folder on Drive.</li>
+   <li>Ask Claude to refresh the hub. Unlock this page and the new week appears.</li>
+   <li>To check a single file yourself instead: open a page on LinkedIn as admin, go to <b>Analytics</b> and use <b>Export</b>.</li>
+   <li>Pick the company below and drop that file in. It stays in your browser only.</li>
   </ol>
   <p class="hint">This works until LinkedIn approves API access, after which the numbers can arrive on their own. The files are read inside your browser. They are not uploaded anywhere or saved on the site. Menu names on LinkedIn change now and then, so if a step looks different, look for the Export button in Analytics.</p>
  </details>
@@ -47,6 +48,7 @@
   <p class="hint">The page compares your pages with each other and with their own earlier weeks. It does not compare with other companies, because those figures need a proper source.</p>
  </details>
 </main>
+<script src="assets/lock.js?v=6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="assets/analytics.js?v=4"></script>
+<script src="assets/analytics.js?v=5"></script>
 </body></html>

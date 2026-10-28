@@ -1,7 +1,7 @@
 (function () {
-  var COMPANIES = ["Telecrats India", "Beckhaul Technologies", "Corsis Technologies", "Ductel", "Pratap Diesels", "PALS", "Voltters", "Pratap Automobiles"];
+  var COMPANIES = ["Pratap Group", "Telecrats India", "Beckhaul Technologies", "Corsis Technologies", "Ductel", "Pratap Diesels", "PALS", "Voltters", "Pratap Automobiles"];
   var KEY = "pmh-analytics-v1";
-  var data = {}, sample = false, openIds = {};
+  var data = {}, sample = false, openIds = {}, base = null, baseInfo = null, local = {};
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function $(id) { return document.getElementById(id); }
@@ -10,7 +10,7 @@
   function poss(n) { return /s$/i.test(n) ? n + "\u2019" : n + "\u2019s"; }
   function dstr(d) { return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }); }
 
-  function save() { if (sample) return; try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} }
+  function save() { if (sample) return; try { var o = {}; Object.keys(data).forEach(function (k) { if (!base || !base[k] || data[k].__mine) o[k] = data[k]; }); localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
   function load() { try { var s = localStorage.getItem(KEY); if (s) data = JSON.parse(s) || {}; } catch (e) {} }
 
   /* ---------- reading LinkedIn exports ---------- */
@@ -83,7 +83,7 @@
     if (parsed.posts.length) c.posts = parsed.posts;
     if (parsed.followers.length) c.followers = parsed.followers;
     c.daily.sort(function (a, b) { return a.t - b.t; });
-    data[company] = c;
+    c.__mine = true; data[company] = c;
   }
 
   /* ---------- working out the numbers ---------- */
@@ -254,6 +254,14 @@
     $("clearBtn").addEventListener("click", function () { data = {}; sample = false; $("sampleBadge").hidden = true; try { localStorage.removeItem(KEY); } catch (e) {} setNote("All numbers cleared from this browser."); render(); });
     document.addEventListener("click", function (e) { var b = e.target.closest("[data-del]"); if (!b) return; delete data[b.getAttribute("data-del")]; save(); render(); });
     document.addEventListener("toggle", function (e) { var t = e.target; if (t && t.dataset && t.dataset.id) openIds[t.dataset.id] = t.open; }, true);
+    if (window.Lock) Lock.init({ blobUrl: "data/analytics.locked.json",
+      onUnlock: function (txt) {
+        try { var o = JSON.parse(txt); base = o.data; baseInfo = o; } catch (e) { return; }
+        if (!sample) { var mine = data; data = {}; Object.keys(base).forEach(function (k) { data[k] = base[k]; }); Object.keys(mine).forEach(function (k) { if (mine[k].__mine) data[k] = mine[k]; }); }
+        setNote(baseInfo.week + " loaded (" + baseInfo.range + "). Files you add here replace a page for this browser only.");
+        render();
+      },
+      onLock: function () { base = null; baseInfo = null; if (!sample) { var m = {}; Object.keys(data).forEach(function (k) { if (data[k].__mine) m[k] = data[k]; }); data = m; } setNote(""); render(); } });
     render();
   }
   init();
