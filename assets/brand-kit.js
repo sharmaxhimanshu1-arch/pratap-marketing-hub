@@ -90,7 +90,7 @@
   function cardsHtml(list) {
     return '<div class="kgrid">' + list.map(function (id) {
       var c = pub.companies[id], st = c.artStyle && pub.artstyles[c.artStyle];
-      var logo = c.logoFile ? '<img src="' + esc(c.logoFile) + '?v=4" alt="' + esc(c.name) + ' logo" loading="lazy">' : monogram(c);
+      var logo = c.logoFile ? '<img src="' + esc(c.logoFile) + '?v=5" alt="' + esc(c.name) + ' logo" loading="lazy">' : monogram(c);
       var note = c.logoFile ? '' : '<small class="nologo">Logo file not added yet</small>';
       return '<button type="button" class="kcard" data-goto="' + esc(id) + '"><div class="klogo">' + logo + '</div>' +
         '<h3>' + esc(c.name) + '</h3><p>' + esc(c.about || "Description not added yet.") + '</p>' +
