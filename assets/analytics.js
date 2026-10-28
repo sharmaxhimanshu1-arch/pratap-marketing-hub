@@ -333,15 +333,15 @@
     });
     var maxImp = Math.max.apply(null, all.map(function (x) { return x.s.imp; })) || 1;
     html += '<div class="sec-title"><h2>Page by page</h2><span class="muted">Select a page to see its detail</span></div>';
-    html += '<div class="sortbar"><label for="sortSel">Sort by</label><select id="sortSel">' + Object.keys(SORTS).map(function (k) { return '<option value="' + k + '"' + (k === sortKey ? " selected" : "") + ">" + SORTS[k] + "</option>"; }).join("") + "</select></div>";
-    html += '<div class="lbwrap"><table class="lb"><thead><tr>' + th("n", "Page") + th("imp", "Views") + th("trend", "Trend") + th("rate", "Actions per 100 views") + th("posts", "Posts") + th("fol", "New followers") + "</tr></thead><tbody>" +
+    html += '<div class="sortbar"><label for="sortSel">Sort by</label><select id="sortSel">' + Object.keys(SORTS).filter(function (k) { return k !== "fol" || hasF; }).map(function (k) { return '<option value="' + k + '"' + (k === sortKey ? " selected" : "") + ">" + SORTS[k] + "</option>"; }).join("") + "</select></div>";
+    html += '<div class="lbwrap"><table class="lb"><thead><tr>' + th("n", "Page") + th("imp", "Views") + th("trend", "Trend") + th("rate", "Actions per 100 views") + th("posts", "Posts") + (hasF ? th("fol", "New followers") : "") + "</tr></thead><tbody>" +
       all.map(function (x) {
         return '<tr' + (x.n === sel ? ' class="on"' : "") + '><td data-l="Page"><button type="button" class="pg" data-pick="' + esc(x.n) + '">' + esc(x.n) + '</button></td>' +
           '<td class="vcell" data-l="Views"><span class="num">' + fmt(x.s.imp) + '</span><span class="bar"><i style="width:' + Math.max(2, x.s.imp / maxImp * 100).toFixed(1) + '%"></i></span></td>' +
           '<td data-l="Trend"><span class="tcell">' + spark(x.s.spark) + (pill(x.s.dp) || "") + "</span></td>" +
           '<td data-l="Actions per 100 views">' + (x.s.rate != null ? per100(x.s.rate) : "–") + "</td>" +
           '<td data-l="Posts">' + (x.s.posts != null ? x.s.posts : "–") + "</td>" +
-          '<td data-l="New followers">' + (x.s.followersNew != null ? fmt(x.s.followersNew) : "–") + "</td></tr>";
+          (hasF ? '<td data-l="New followers">' + (x.s.followersNew != null ? fmt(x.s.followersNew) : "–") + "</td>" : "") + "</tr>";
       }).join("") + "</tbody></table></div>";
 
     /* 4. Trend chart + page focus */
